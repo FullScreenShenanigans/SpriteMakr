@@ -1,6 +1,6 @@
 {
-    "name": "ImageReadr",
-    "description": "A utility for converting regular images into PixelRendr sprites.",
+    "name": "ImageWritr",
+    "description": "A utility for converting PixelRendr sprites into regular images.",
     "version": "0.2.0",
     "author": {
         "name": "Josh Goldberg",
@@ -8,10 +8,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:FullScreenShenanigans/ImageReadr.git"
+        "url": "ssh://git@github.com:FullScreenShenanigans/ImageWritr.git"
     },
     "bugs": {
-        "url": "https://github.com/FullScreenShenanigans/ImageReadr/issues"
+        "url": "https://github.com/FullScreenShenanigans/ImageWritr/issues"
     },
     "license": "MIT",
     "devDependencies": {

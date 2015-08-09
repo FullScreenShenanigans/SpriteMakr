@@ -1,0 +1,95 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    cursor: default;
+}
+
+body {
+    font-size: 1.4em;
+}
+
+
+/* General styles */
+
+aside {
+    padding: 14px;
+}
+
+aside, .original {
+    color: #777777;
+    font-size: 1.4em;
+    font-style: italic;
+    text-align: center;
+}
+
+
+/* General interactivity */
+
+body {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* Input display */
+
+#input {
+    padding: 35px 14px;
+    border: solid #cccccc;
+    border-width: 3px 0;
+    background: #eeeeee;
+}
+
+    #input input[type=text] {
+        display: block;
+        position: relative;
+        width: 98%;
+        left: 1%;
+        right: 1%;
+        text-align: center;
+    }
+
+
+/* Output display */
+
+#output {
+    padding-top: 7px;
+}
+
+    #output aside {
+        margin-top: 21px;
+    }
+
+        #output aside:not(:first-child) {
+            display: none;
+        }
+
+.output {
+    position: relative;
+    margin: 14px 0;
+    padding: 7px 0;
+    border: solid #aaaaaa;
+    border-width: 1px 0;
+    text-align: center;
+    overflow-x: hidden;
+    background-size: contain;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #daffdf;
+}
+
+    .output input[type=text] {
+        width: 2em;
+        text-align: center;
+    }
+
+    .output canvas {
+        margin: 15px 0 0 0;
+        border: solid gray;
+        border-width: 1px;
+    }
+

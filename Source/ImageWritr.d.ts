@@ -3,7 +3,7 @@
 declare module ImageWritr {
     export interface IImageWritr {}
 
-    function processInput(
+    export function processInput(
         inputString: string,
         output: HTMLElement,
         imageWriters: IImageWritr[]

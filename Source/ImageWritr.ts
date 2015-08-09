@@ -13,7 +13,7 @@ module ImageWritr {
         canvas: HTMLCanvasElement
     }
 
-    export function processInput(
+    function processInput(
         inputString: string,
         output: HTMLElement,
         imageWriters: IImageWritr[])
@@ -82,7 +82,7 @@ module ImageWritr {
         ) {
             this.pixelRender = pixelRender;
             var nPixels: number =
-                this.pixelRender.library.sprites.mySprite.length / 4;
+                this.pixelRender.getBaseLibrary().sprites.mySprite.length / 4;
             this.dims = calculatePossibleDimensions(nPixels);
             this.dimIndex = Math.floor( (this.dims.length - 1) / 2 );
             this.canvas = canvas;
@@ -141,7 +141,8 @@ module ImageWritr {
             this.pixelRender.memcpyU8(sprite, imageData.data);
             context.putImageData(imageData, 0, 0);
 
-            this.link.download = "mario.png";
+            // Work around error TS2339.
+            (<any>this.link).download = "mario.png";
             this.link.href = this.canvas.toDataURL("image/png");
         }
     }

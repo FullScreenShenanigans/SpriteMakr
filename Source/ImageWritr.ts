@@ -1,9 +1,9 @@
-/// <reference path="ImageReadr.d.ts" />
+/// <reference path="ImageWritr.d.ts" />
 
-module ImageReadr {
+module ImageWritr {
     "use strict";
 
-    export class ImageReadr implements IImageReadr {
+    export class ImageWritr implements IImageWritr {
         /**
          * 
          */
@@ -47,7 +47,7 @@ module ImageReadr {
         /**
          * 
          */
-        constructor(settings: IImageReadrSettings) {
+        constructor(settings: IImageWritrSettings) {
             this.allowedFiles = settings.allowedFiles;
             this.sectionSelector = settings.sectionSelector;
             this.inputSelector = settings.inputSelector;

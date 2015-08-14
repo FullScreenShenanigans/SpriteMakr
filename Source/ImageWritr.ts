@@ -3,7 +3,7 @@
 module ImageWritr {
     "use strict";
 
-    interface ImageWritrDomElements {
+    interface ISpriteDrawrDomElements {
         container: HTMLDivElement;
         left:   HTMLInputElement;
         right:  HTMLInputElement;
@@ -13,20 +13,22 @@ module ImageWritr {
         canvas: HTMLCanvasElement;
     }
 
-    function processInput(
-        inputString: string,
-        output: HTMLElement,
-        imageWriters: IImageWritr[])
-    : void {
-        var pr: PixelRendr.IPixelRendr = createPixelRender( inputString );
-        var e: ImageWritrDomElements = createDomElements();
-        imageWriters.push( new ImageWritr(
-            pr, e.left, e.right, e.width, e.height, e.canvas, e.link) );
-        output.insertBefore( e.container, output.firstElementChild );
+    export class ImageWritr implements IImageWritr {
+        processInput(
+            inputString: string,
+            output: HTMLElement,
+            spriteDrawers: any[])
+        : void {
+            var pr: PixelRendr.IPixelRendr = createPixelRender( inputString );
+            var e: ISpriteDrawrDomElements = createDomElements();
+            spriteDrawers.push( new SpriteDrawr(
+                pr, e.left, e.right, e.width, e.height, e.canvas, e.link) );
+            output.insertBefore( e.container, output.firstElementChild );
+        }
     }
 
-    function createDomElements(): ImageWritrDomElements {
-        var e: ImageWritrDomElements = {
+    function createDomElements(): ISpriteDrawrDomElements {
+        var e: ISpriteDrawrDomElements = {
             container : document.createElement( "div" ),
             left   : createInputHelper( "button", "←" ),
             right  : createInputHelper( "button", "→" ),
@@ -60,7 +62,7 @@ module ImageWritr {
         return input;
     }
 
-    class ImageWritr {
+    class SpriteDrawr {
         private pixelRender: PixelRendr.IPixelRendr;
         private dims: number[][];
         private dimIndex: number;
@@ -82,7 +84,7 @@ module ImageWritr {
         ) {
             this.pixelRender = pixelRender;
             var nPixels: number =
-                this.pixelRender.getBaseLibrary().sprites.mySprite.length / 4;
+                this.pixelRender.getBaseLibrary().mySprite.length / 4;
             this.dims = calculatePossibleDimensions(nPixels);
             this.dimIndex = Math.floor( (this.dims.length - 1) / 2 );
             this.canvas = canvas;

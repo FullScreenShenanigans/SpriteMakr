@@ -5,14 +5,15 @@ document.onreadystatechange = function (event) {
         return;
     }
 
-    var imageDrawers = [];
+    var spriteDrawers = [];
 
     var input = document.getElementById("text-input");
     var output = document.getElementById("output");
 
+    var o = new ImageWritr.ImageWritr();
     input.onkeypress = function(key) {
         if(key.which == 13) {
-            ImageWritr.processInput(input.value, output, imageDrawers);
+            o.processInput(input.value, output, spriteDrawers);
         }
     };
 

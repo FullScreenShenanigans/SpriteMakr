@@ -4,13 +4,13 @@ module ImageWritr {
     "use strict";
 
     interface ImageWritrDomElements {
-        container: HTMLDivElement,
-        left:   HTMLInputElement,
-        right:  HTMLInputElement,
-        width:  HTMLInputElement,
-        height: HTMLInputElement,
-        link:   HTMLAnchorElement,
-        canvas: HTMLCanvasElement
+        container: HTMLDivElement;
+        left:   HTMLInputElement;
+        right:  HTMLInputElement;
+        width:  HTMLInputElement;
+        height: HTMLInputElement;
+        link:   HTMLAnchorElement;
+        canvas: HTMLCanvasElement;
     }
 
     function processInput(

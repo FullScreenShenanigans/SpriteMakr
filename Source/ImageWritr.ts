@@ -335,24 +335,32 @@ module ImageWritr {
          * 
          */
         private workerTryStartWorkingDefault(result: string, file: File, element: HTMLElement, event: Event): void {
+            var reader: FileReader = new FileReader();
+            reader.onloadend = function(): void {
+                var settings: Object = new Function(
+                    this.result.replace(/^[^=]* =/, "return") )();
+                console.log(settings);
+            };
+            reader.readAsText(file);
+            /*
             if (result.length > 100000) {
                 this.workerCannotStartWorking(result, file, element, event);
             } else {
                 this.workerStartWorking(result, file, element, event);
             }
+            */
         }
 
-        /**
+        /* *
          * 
-         */
         private workerCannotStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
             element.innerText = "'" + file.name + "' is too big! Use a smaller file.";
             element.className = "output output-failed";
         }
-
-        /**
-         * 
          */
+
+        /* *
+         * 
         private workerStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
             var displayBase64: HTMLInputElement = document.createElement("input");
 
@@ -369,19 +377,19 @@ module ImageWritr {
 
             this.parseBase64Image(file, result, this.workerFinishRender.bind(this, file, element));
         }
-
-        /**
-         * 
          */
+
+        /* *
+         * 
         private parseBase64Image(file: File, src: string, callback: PixelRendr.IPixelRendrEncodeCallback): void {
             var image: HTMLImageElement = document.createElement("img");
             image.onload = this.PixelRender.encode.bind(this.PixelRender, image, callback);
             image.src = src;
         }
-
-        /**
-         * 
          */
+
+        /* *
+         * 
         private workerFinishRender(file: File, element: HTMLElement, result: string, image: HTMLImageElement): void {
             var displayResult: HTMLInputElement = document.createElement("input");
 
@@ -396,6 +404,7 @@ module ImageWritr {
 
             element.appendChild(displayResult);
         }
+         */
 
         /**
          * 
@@ -458,6 +467,24 @@ module ImageWritr {
             element.appendChild(displayResult);
 
             chooser.click();
+        }
+    }
+}
+module A {
+    "use strict";
+
+    export function process(key: string, value: string): void {
+        console.log(key + ": " + value);
+    }
+
+    export function traverse(o: Object, func: Function): void {
+        var i: any;
+        for (i in o) {
+            if (o[i] !== null && typeof(o[i]) === "object") {
+                traverse(o[i], func);
+            } else {
+                func.apply(this, [i, o[i]] );
+            }
         }
     }
 }

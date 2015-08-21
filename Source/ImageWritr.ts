@@ -361,7 +361,7 @@ module ImageWritr {
 
         private processSprite(key: string, value: number): void {
             console.log(key + ": " + value);
-            var e: ISpriteDrawrDomElements = createDomElements();
+            var e: any = createDomElements();
             this.spriteDrawers.push( new SpriteDrawr(
                 this.PixelRender, key, value,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
@@ -504,16 +504,6 @@ module ImageWritr {
         }
     }
 
-    interface ISpriteDrawrDomElements {
-        container: HTMLDivElement;
-        left:   HTMLInputElement;
-        right:  HTMLInputElement;
-        width:  HTMLInputElement;
-        height: HTMLInputElement;
-        link:   HTMLAnchorElement;
-        canvas: HTMLCanvasElement;
-    }
-
 /*
     export function processInput(
         inputString: string,
@@ -528,8 +518,8 @@ module ImageWritr {
     }
 */
 
-    function createDomElements(): ISpriteDrawrDomElements {
-        var e: ISpriteDrawrDomElements = {
+    function createDomElements(): any {
+        var e: any = {
             container : document.createElement( "div" ),
             left   : createInputHelper( "button", "←" ),
             right  : createInputHelper( "button", "→" ),

@@ -44,10 +44,13 @@ module ImageWritr {
          */
         private outputSelector: string;
 
+        private spriteDrawers: any[];
+
         /**
          * 
          */
         constructor(settings: IImageWritrSettings) {
+            this.spriteDrawers = [];
             this.allowedFiles = settings.allowedFiles;
             this.sectionSelector = settings.sectionSelector;
             this.inputSelector = settings.inputSelector;
@@ -335,10 +338,15 @@ module ImageWritr {
          * 
          */
         private workerTryStartWorkingDefault(result: string, file: File, element: HTMLElement, event: Event): void {
+            var that: any = this;
             var reader: FileReader = new FileReader();
             reader.onloadend = function(): void {
-                var settings: Object = new Function(
-                    this.result.replace(/^[^=]* =/, "return") )();
+                var settings: PixelRendr.IPixelRendrSettings = new Function(
+                    this.result.replace(/^[^=]*=/, "return") )();
+                // Leave default values to make sure we can draw the sprite.
+                settings.spriteWidth = settings.spriteHeight = "";
+                that.PixelRender = new PixelRendr.PixelRendr( settings );
+                that.traverseSpriteLibrary(that.PixelRender.getBaseLibrary());
                 console.log(settings);
             };
             reader.readAsText(file);
@@ -349,6 +357,32 @@ module ImageWritr {
                 this.workerStartWorking(result, file, element, event);
             }
             */
+        }
+
+        private processSprite(key: string, value: number): void {
+            console.log(key + ": " + value);
+            var e: ISpriteDrawrDomElements = createDomElements();
+            this.spriteDrawers.push( new SpriteDrawr(
+                this.PixelRender, key, value,
+                e.left, e.right, e.width, e.height, e.canvas, e.link) );
+            var output: HTMLElement = <HTMLElement>document.querySelector(
+                this.outputSelector);
+            output.insertBefore(e.container, output.firstElementChild);
+        }
+
+        private traverseSpriteLibrary(o: Object, prevKey: string = ""): void {
+            var i: any;
+            for (i in o) {
+                if (o[i] !== null && typeof(o[i]) === "object") {
+                    if ( o[i].constructor === Uint8ClampedArray ) {
+                        this.processSprite(
+                            (i !== "normal" ? prevKey + i : prevKey),
+                            o[i].length / 4 );
+                    } else {
+                        this.traverseSpriteLibrary( o[i], prevKey + i + " " );
+                    }
+                }
+            }
         }
 
         /* *
@@ -469,22 +503,173 @@ module ImageWritr {
             chooser.click();
         }
     }
-}
-module A {
-    "use strict";
 
-    export function process(key: string, value: string): void {
-        console.log(key + ": " + value);
+    interface ISpriteDrawrDomElements {
+        container: HTMLDivElement;
+        left:   HTMLInputElement;
+        right:  HTMLInputElement;
+        width:  HTMLInputElement;
+        height: HTMLInputElement;
+        link:   HTMLAnchorElement;
+        canvas: HTMLCanvasElement;
     }
 
-    export function traverse(o: Object, func: Function): void {
-        var i: any;
-        for (i in o) {
-            if (o[i] !== null && typeof(o[i]) === "object") {
-                traverse(o[i], func);
-            } else {
-                func.apply(this, [i, o[i]] );
+/*
+    export function processInput(
+        inputString: string,
+        output: HTMLElement,
+        spriteDrawers: any[])
+    : void {
+        var pr: PixelRendr.IPixelRendr = createPixelRender( inputString );
+        var e: ISpriteDrawrDomElements = createDomElements();
+        spriteDrawers.push( new SpriteDrawr(
+            pr, e.left, e.right, e.width, e.height, e.canvas, e.link) );
+        output.insertBefore( e.container, output.firstElementChild );
+    }
+*/
+
+    function createDomElements(): ISpriteDrawrDomElements {
+        var e: ISpriteDrawrDomElements = {
+            container : document.createElement( "div" ),
+            left   : createInputHelper( "button", "←" ),
+            right  : createInputHelper( "button", "→" ),
+            width  : createInputHelper( "text" ),
+            height : createInputHelper( "text" ),
+            link   : document.createElement( "a" ),
+            canvas : document.createElement( "canvas" )
+        };
+        e.container.appendChild( e.left );
+        e.container.appendChild( e.right );
+        e.container.appendChild( document.createElement("br") );
+        e.container.appendChild( e.width );
+        e.container.appendChild( e.height );
+        e.container.appendChild( document.createElement("br") );
+        e.container.appendChild( e.link );
+        e.link.appendChild( e.canvas );
+        e.container.className = "output";
+        return e;
+    }
+
+    function createInputHelper(type: string, value?: string)
+    : HTMLInputElement {
+        var input: HTMLInputElement = document.createElement("input");
+        if ( type === "text" ) {
+            input.type = "text";
+            input.readOnly = true;
+        } else if ( type === "button" ) {
+            input.type = "button";
+            input.value = value;
+        }
+        return input;
+    }
+
+    class SpriteDrawr {
+        private pixelRender: PixelRendr.IPixelRendr;
+        private spriteKey: string;
+        private dims: number[][];
+        private dimIndex: number;
+        private canvas: HTMLCanvasElement;
+        private widthText: HTMLInputElement;
+        private heightText: HTMLInputElement;
+        private link: HTMLAnchorElement;
+        private leftButton: HTMLInputElement;
+        private rightButton: HTMLInputElement;
+
+        constructor(
+            pixelRender: PixelRendr.IPixelRendr,
+            spriteKey: string,
+            nPixels: number,
+            leftButton: HTMLInputElement,
+            rightButton: HTMLInputElement,
+            widthText: HTMLInputElement,
+            heightText: HTMLInputElement,
+            canvas: HTMLCanvasElement,
+            link: HTMLAnchorElement
+        ) {
+            this.pixelRender = pixelRender;
+            this.spriteKey = spriteKey;
+            this.dims = calculatePossibleDimensions(nPixels);
+            this.dimIndex = Math.floor( (this.dims.length - 1) / 2 );
+            this.canvas = canvas;
+            this.widthText  = widthText;
+            this.heightText = heightText;
+            this.link = link;
+            this.leftButton  = leftButton;
+            this.rightButton = rightButton;
+            var that: any = this;
+            this.leftButton.onclick  = function(): void {
+                that.updateDim("-");
+            };
+            this.rightButton.onclick = function(): void {
+                that.updateDim("+");
+            };
+            this.updateDim();
+        }
+
+        private updateDim(op?: string): void {
+            var maxInd: number = this.dims.length - 1;
+            if ( op === "+" ) {
+                if ( this.dimIndex >= maxInd ) {
+                    this.dimIndex = maxInd;
+                } else {
+                    ++this.dimIndex;
+                }
+            } else if ( op === "-" ) {
+                if ( this.dimIndex <= 0 ) {
+                    this.dimIndex = 0;
+                } else {
+                    --this.dimIndex;
+                }
             }
+
+            this.canvas.width  = this.dims[this.dimIndex][0];
+            this.canvas.height = this.dims[this.dimIndex][1];
+            this.widthText.value  = String( this.canvas.width );
+            this.heightText.value = String( this.canvas.height );
+
+            this.rightButton.readOnly = (this.dimIndex === maxInd);
+            this.leftButton .readOnly = (this.dimIndex === 0);
+
+            this.render();
+        }
+
+        private render(): void {
+            var sizing: any = {
+                spriteWidth: this.canvas.width,
+                spriteHeight: this.canvas.height
+            };
+            var sprite: any = this.pixelRender.decode(this.spriteKey, sizing);
+            var context: any = this.canvas.getContext("2d");
+
+            var imageData: any = context.getImageData(
+                0, 0, this.canvas.width, this.canvas.height);
+            this.pixelRender.memcpyU8(sprite, imageData.data);
+            context.putImageData(imageData, 0, 0);
+
+            // Work around error TS2339.
+            (<any>this.link).download = "mario.png";
+            this.link.href = this.canvas.toDataURL("image/png");
         }
     }
+
+    function calculatePossibleDimensions(nPixels: number): number[][] {
+        var dims: number[][] = [];
+        var upTo: number = Math.sqrt(nPixels);
+        for ( var n: number = 2; n <= upTo; ++n ) {
+            if ( nPixels % n === 0 ) {
+                dims.push( [n, nPixels / n] );
+            }
+        }
+
+        var iReverseUpTo: number = dims.length - 1;
+        if ( dims[iReverseUpTo][0] === dims[iReverseUpTo][1] ) {
+            --iReverseUpTo;
+        }
+        for ( var i: number = iReverseUpTo ; i >= 0 ; --i ) {
+            dims.push( [ dims[i][1], dims[i][0] ] );
+        }
+
+        return dims;
+    }
 }
+

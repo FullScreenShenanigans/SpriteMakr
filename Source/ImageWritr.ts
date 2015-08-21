@@ -643,7 +643,9 @@ module ImageWritr {
     }
 
     function calculatePossibleDimensions(nPixels: number): number[][] {
-        var dims: number[][] = [];
+        if ( nPixels === 0 ) { return null; }
+
+        var dims: number[][] = [ [1, nPixels] ];
         var upTo: number = Math.sqrt(nPixels);
         for ( var n: number = 2; n <= upTo; ++n ) {
             if ( nPixels % n === 0 ) {

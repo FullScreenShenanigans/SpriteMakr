@@ -617,8 +617,8 @@ module ImageWritr {
             this.widthText.value  = String( this.canvas.width );
             this.heightText.value = String( this.canvas.height );
 
-            this.rightButton.readOnly = (this.dimIndex === maxInd);
-            this.leftButton .readOnly = (this.dimIndex === 0);
+            this.rightButton.disabled = (this.dimIndex === maxInd);
+            this.leftButton .disabled = (this.dimIndex === 0);
 
             this.render();
         }

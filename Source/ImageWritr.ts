@@ -342,9 +342,11 @@ module ImageWritr {
             var reader: FileReader = new FileReader();
             reader.onloadend = function(): void {
                 var settings: PixelRendr.IPixelRendrSettings = new Function(
-                    this.result.replace(/^[^=]*=/, "return") )();
+                    this.result.replace(/^[^=]*=/, "return")
+                        .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'") )();
                 // Leave default values to make sure we can draw the sprite.
                 settings.spriteWidth = settings.spriteHeight = "";
+                settings.scale = 1;
                 that.PixelRender = new PixelRendr.PixelRendr( settings );
                 that.traverseSpriteLibrary(that.PixelRender.getBaseLibrary());
                 console.log(settings);

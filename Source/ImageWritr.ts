@@ -44,7 +44,10 @@ module ImageWritr {
          */
         private outputSelector: string;
 
-        private spriteDrawers: any[];
+        /**
+         * 
+         */
+        private spriteDrawers: SpriteDrawr[];
 
         /**
          * 

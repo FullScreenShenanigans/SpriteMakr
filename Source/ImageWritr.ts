@@ -374,12 +374,12 @@ module ImageWritr {
             var i: any;
             for (i in o) {
                 if (o[i] !== null && typeof(o[i]) === "object") {
-                    if ( o[i].constructor === Uint8ClampedArray ) {
+                    if ( o[i].constructor !== Uint8ClampedArray ) {
+                        this.traverseSpriteLibrary( o[i], prevKey + i + " " );
+                    } else if ( o[i].length > 0 ) {
                         this.processSprite(
                             (i !== "normal" ? prevKey + i : prevKey),
                             o[i].length / 4 );
-                    } else {
-                        this.traverseSpriteLibrary( o[i], prevKey + i + " " );
                     }
                 }
             }

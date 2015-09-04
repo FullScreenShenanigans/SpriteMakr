@@ -175,6 +175,7 @@ input[type=file] {
         background-color: #daffdf;
     }
 
+/*
     .output input[type=text] {
         display: block;
         position: relative;
@@ -183,3 +184,26 @@ input[type=file] {
         right: 1%;
         text-align: center;
     }
+*/
+    .output input[type=text] {
+        width: 2em;
+        text-align: center;
+    }
+
+    .output canvas {
+        margin: 15px 0 0 0;
+        border: solid gray;
+        border-width: 1px;
+    }
+
+/*
+    #input input[type=text] {
+        display: block;
+        position: relative;
+        width: 98%;
+        left: 1%;
+        right: 1%;
+        text-align: center;
+    }
+*/
+

@@ -374,6 +374,7 @@ module ImageWritr {
             var output: HTMLElement = <HTMLElement>document.querySelector(
                 this.outputSelector);
             output.insertBefore(e.container, output.firstElementChild);
+            e.container.className = "output output-complete";
         }
 
         private traverseSpriteLibrary(o: Object, prevKey: string = ""): void {
@@ -542,7 +543,6 @@ module ImageWritr {
         e.container.appendChild( document.createElement("br") );
         e.container.appendChild( e.link );
         e.link.appendChild( e.canvas );
-        e.container.className = "output";
         return e;
     }
 

@@ -294,7 +294,7 @@ module ImageWritr {
         }
 
         private processSpriteLibrary(file: File): void {
-            var that: any = this;
+            var self: any = this;
             var reader: FileReader = new FileReader();
             reader.onloadend = function(): void {
                 var settings: PixelRendr.IPixelRendrSettings = new Function(
@@ -303,8 +303,8 @@ module ImageWritr {
                 // Leave default values to make sure we can draw the sprite.
                 settings.spriteWidth = settings.spriteHeight = "";
                 settings.scale = 1;
-                that.PixelRender = new PixelRendr.PixelRendr( settings );
-                that.traverseSpriteLibrary(that.PixelRender.getBaseLibrary());
+                self.PixelRender = new PixelRendr.PixelRendr( settings );
+                self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
             };
             reader.readAsText(file);
         }
@@ -591,12 +591,12 @@ module ImageWritr {
             this.link = link;
             this.leftButton  = leftButton;
             this.rightButton = rightButton;
-            var that: any = this;
+            var self: any = this;
             this.leftButton.onclick  = function(): void {
-                that.updateDim("-");
+                self.updateDim("-");
             };
             this.rightButton.onclick = function(): void {
-                that.updateDim("+");
+                self.updateDim("+");
             };
             this.updateDim();
         }

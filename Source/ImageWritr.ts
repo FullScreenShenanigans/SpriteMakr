@@ -366,7 +366,6 @@ module ImageWritr {
          */
 
         private processSprite(key: string, value: number): void {
-            console.log(key + ": " + value);
             var e: any = createDomElements();
             this.spriteDrawers.push( new SpriteDrawr(
                 this.PixelRender, key, value,
@@ -642,8 +641,8 @@ module ImageWritr {
             this.pixelRender.memcpyU8(sprite, imageData.data);
             context.putImageData(imageData, 0, 0);
 
-            // Work around error TS2339.
-            (<any>this.link).download = "mario.png";
+            (<any>this.link).download =
+                this.spriteKey.replace(/ /g, "_") + ".png";
             this.link.href = this.canvas.toDataURL("image/png");
         }
     }

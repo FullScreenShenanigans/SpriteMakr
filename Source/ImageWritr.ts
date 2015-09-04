@@ -258,7 +258,7 @@ module ImageWritr {
          */
         private handleFileDrop(input: HTMLInputElement, event: DragEvent): void {
             var files: FileList = input.files || event.dataTransfer.files,
-                output: HTMLElement = <HTMLElement>document.querySelector(this.outputSelector),
+                // output: HTMLElement = <HTMLElement>document.querySelector(this.outputSelector),
                 elements: IWorkerHTMLElement[] = [],
                 file: File,
                 tag: string,
@@ -282,17 +282,35 @@ module ImageWritr {
                     continue;
                 }
 
-                elements.push(this.createWorkerElement(files[i], <IWorkerHTMLElement>event.target));
+                // elements.push(this.createWorkerElement(files[i], <IWorkerHTMLElement>event.target));
+                this.processSpriteLibrary(file);
             }
 
+            /*
             for (i = 0; i < elements.length; i += 1) {
                 output.insertBefore(elements[i], output.firstElementChild);
             }
+            */
         }
 
-        /**
+        private processSpriteLibrary(file: File): void {
+            var that: any = this;
+            var reader: FileReader = new FileReader();
+            reader.onloadend = function(): void {
+                var settings: PixelRendr.IPixelRendrSettings = new Function(
+                    this.result.replace(/^[^=]*=/, "return")
+                        .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'") )();
+                // Leave default values to make sure we can draw the sprite.
+                settings.spriteWidth = settings.spriteHeight = "";
+                settings.scale = 1;
+                that.PixelRender = new PixelRendr.PixelRendr( settings );
+                that.traverseSpriteLibrary(that.PixelRender.getBaseLibrary());
+            };
+            reader.readAsText(file);
+        }
+
+        /* *
          * 
-         */
         private createWorkerElement(file: File, target: IWorkerHTMLElement): IWorkerHTMLElement {
             var element: IWorkerHTMLElement = <IWorkerHTMLElement>document.createElement("div"),
                 reader: FileReader = new FileReader();
@@ -308,10 +326,10 @@ module ImageWritr {
 
             return element;
         }
-
-        /**
-         * 
          */
+
+        /* *
+         * 
         private workerUpdateProgress(file: File, element: HTMLElement, event: ProgressEvent): void {
             if (!event.lengthComputable) {
                 return;
@@ -321,12 +339,10 @@ module ImageWritr {
 
             element.innerText = "Uploading '" + file.name + "' (" + percent + "%)...";
         }
-
-        /**
-         * 
-         * 
-         * 
          */
+
+        /* *
+         * 
         private workerTryStartWorking(file: File, element: IWorkerHTMLElement, event: ProgressEvent): void {
             var result: string = (<any>event.currentTarget).result;
 
@@ -336,33 +352,18 @@ module ImageWritr {
                 this.workerTryStartWorkingDefault(result, file, element, event);
             }
         }
-
-        /**
-         * 
          */
+
+        /* *
+         * 
         private workerTryStartWorkingDefault(result: string, file: File, element: HTMLElement, event: Event): void {
-            var that: any = this;
-            var reader: FileReader = new FileReader();
-            reader.onloadend = function(): void {
-                var settings: PixelRendr.IPixelRendrSettings = new Function(
-                    this.result.replace(/^[^=]*=/, "return")
-                        .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'") )();
-                // Leave default values to make sure we can draw the sprite.
-                settings.spriteWidth = settings.spriteHeight = "";
-                settings.scale = 1;
-                that.PixelRender = new PixelRendr.PixelRendr( settings );
-                that.traverseSpriteLibrary(that.PixelRender.getBaseLibrary());
-                console.log(settings);
-            };
-            reader.readAsText(file);
-            /*
             if (result.length > 100000) {
                 this.workerCannotStartWorking(result, file, element, event);
             } else {
                 this.workerStartWorking(result, file, element, event);
             }
-            */
         }
+         */
 
         private processSprite(key: string, value: number): void {
             console.log(key + ": " + value);

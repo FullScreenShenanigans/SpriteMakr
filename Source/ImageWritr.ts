@@ -27,7 +27,12 @@ module ImageWritr {
         /**
          * 
          */
-        private allowedFiles: { [i: string]: boolean; };
+        private allowedImages: { [i: string]: boolean; };
+
+        /**
+         *
+         */
+        private allowedJS: { [i: string]: boolean; };
 
         /**
          * 
@@ -44,7 +49,8 @@ module ImageWritr {
          */
         constructor(settings: IImageWritrSettings) {
             this.spriteDrawers = [];
-            this.allowedFiles = settings.allowedFiles;
+            this.allowedJS = settings.allowedJS;
+            this.allowedImages = settings.allowedImages;
             this.paletteDefault = settings.paletteDefault;
             this.palettes = settings.palettes;
             this.palette = settings.paletteDefault;
@@ -57,7 +63,8 @@ module ImageWritr {
         }
 
 
-        /* Internal resets
+        /*
+            Internal resets
         */
 
         /**
@@ -190,7 +197,8 @@ module ImageWritr {
         }
 
 
-        /* Input
+        /*
+            Input
         */
 
         /**
@@ -281,24 +289,27 @@ module ImageWritr {
                 file = files[i];
                 tag = file.type.split("/")[1];
 
-                if (!this.allowedFiles[tag]) {
+                if (this.allowedJS[tag]
+                    && !(<IWorkerHTMLElement>event.target).workerCallback ) {
+                    this.processSpriteLibrary(file);
+                } else if (this.allowedImages[tag]) {
+                    elements.push(
+                        this.createWorkerElement(
+                            files[i], <IWorkerHTMLElement>event.target) );
+                } else {
                     element = document.createElement("div");
                     element.className = "output output-failed";
-                    element.textContent = "'" + file.name + "' is either a folder or has a non-image type...";
+                    element.textContent = "'" + file.name
+                        + "' is either a folder or has a non-allowed image or JS filetype...";
                     elements.push(element);
-                    continue;
                 }
 
-                // elements.push(this.createWorkerElement(files[i], <IWorkerHTMLElement>event.target));
-                this.processSpriteLibrary(file);
             }
 
-            /*
             for (i = 0; i < elements.length; i += 1) {
                 this.output.insertBefore(
                     elements[i], this.output.firstElementChild );
             }
-            */
         }
 
         private processSpriteLibrary(file: File): void {
@@ -317,8 +328,9 @@ module ImageWritr {
             reader.readAsText(file);
         }
 
-        /* *
+        /**
          * 
+         */
         private createWorkerElement(file: File, target: IWorkerHTMLElement): IWorkerHTMLElement {
             var element: IWorkerHTMLElement = <IWorkerHTMLElement>document.createElement("div"),
                 reader: FileReader = new FileReader();
@@ -334,10 +346,10 @@ module ImageWritr {
 
             return element;
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private workerUpdateProgress(file: File, element: HTMLElement, event: ProgressEvent): void {
             if (!event.lengthComputable) {
                 return;
@@ -347,10 +359,10 @@ module ImageWritr {
 
             element.innerText = "Uploading '" + file.name + "' (" + percent + "%)...";
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private workerTryStartWorking(file: File, element: IWorkerHTMLElement, event: ProgressEvent): void {
             var result: string = (<any>event.currentTarget).result;
 
@@ -360,10 +372,10 @@ module ImageWritr {
                 this.workerTryStartWorkingDefault(result, file, element, event);
             }
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private workerTryStartWorkingDefault(result: string, file: File, element: HTMLElement, event: Event): void {
             if (result.length > 100000) {
                 this.workerCannotStartWorking(result, file, element, event);
@@ -371,7 +383,6 @@ module ImageWritr {
                 this.workerStartWorking(result, file, element, event);
             }
         }
-         */
 
         private processSprite(key: string, value: number): void {
             var e: any = createDomElements();
@@ -398,16 +409,17 @@ module ImageWritr {
             }
         }
 
-        /* *
+        /**
          * 
+         */
         private workerCannotStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
             element.innerText = "'" + file.name + "' is too big! Use a smaller file.";
             element.className = "output output-failed";
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private workerStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
             var displayBase64: HTMLInputElement = document.createElement("input");
 
@@ -424,19 +436,19 @@ module ImageWritr {
 
             this.parseBase64Image(file, result, this.workerFinishRender.bind(this, file, element));
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private parseBase64Image(file: File, src: string, callback: PixelRendr.IPixelRendrEncodeCallback): void {
             var image: HTMLImageElement = document.createElement("img");
             image.onload = this.PixelRender.encode.bind(this.PixelRender, image, callback);
             image.src = src;
         }
-         */
 
-        /* *
+        /**
          * 
+         */
         private workerFinishRender(file: File, element: HTMLElement, result: string, image: HTMLImageElement): void {
             var displayResult: HTMLInputElement = document.createElement("input");
 
@@ -451,7 +463,6 @@ module ImageWritr {
 
             element.appendChild(displayResult);
         }
-         */
 
         /**
          * 

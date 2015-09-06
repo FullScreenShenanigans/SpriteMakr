@@ -6,8 +6,10 @@ document.onreadystatechange = function (event) {
     }
 
     window.ImageWriter = new ImageWritr.ImageWritr({
-        "allowedFiles": {
-            "javascript": true,
+        "allowedJS": {
+            "javascript": true
+        },
+        "allowedImages": {
             "gif": true,
             "png": true,
             "jpeg": true,

@@ -6,7 +6,8 @@ declare module ImageWritr {
     }
 
     export interface IImageWritrSettings {
-        allowedFiles: { [i: string]: boolean; };
+        allowedImages: { [i: string]: boolean; };
+        allowedJS: { [i: string]: boolean; };
         sectionSelector: string;
         inputSelector: string;
         outputSelector: string;

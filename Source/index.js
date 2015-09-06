@@ -16,6 +16,7 @@ document.onreadystatechange = function (event) {
         "sectionSelector": "#palettes",
         "inputSelector": "#input",
         "outputSelector": "#output",
+        "textInputSelector": "#text-input",
         "paletteDefault": "Mario",
         "palettes": {
             "Black & White": [

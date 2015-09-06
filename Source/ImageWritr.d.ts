@@ -10,6 +10,7 @@ declare module ImageWritr {
         sectionSelector: string;
         inputSelector: string;
         outputSelector: string;
+        textInputSelector: string;
         paletteDefault: string;
         palettes: { [i: string]: number[][] };
     }

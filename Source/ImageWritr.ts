@@ -32,20 +32,10 @@ module ImageWritr {
         /**
          * 
          */
-        private sectionSelector: string;
+        private output: HTMLElement;
 
         /**
-         * 
-         */
-        private inputSelector: string;
-
-        /**
-         * 
-         */
-        private outputSelector: string;
-
-        /**
-         * 
+         *
          */
         private spriteDrawers: SpriteDrawr[];
 
@@ -55,17 +45,15 @@ module ImageWritr {
         constructor(settings: IImageWritrSettings) {
             this.spriteDrawers = [];
             this.allowedFiles = settings.allowedFiles;
-            this.sectionSelector = settings.sectionSelector;
-            this.inputSelector = settings.inputSelector;
-            this.outputSelector = settings.outputSelector;
             this.paletteDefault = settings.paletteDefault;
             this.palettes = settings.palettes;
-
             this.palette = settings.paletteDefault;
+            this.output = <HTMLElement>document.querySelector(
+                settings.outputSelector);
 
-            this.initializePalettes();
-
-            this.initializeInput(this.inputSelector);
+            this.initializePalettes(settings.sectionSelector);
+            this.initializeInput(settings.inputSelector);
+            this.initializeTextInput(settings.textInputSelector);
         }
 
 
@@ -75,8 +63,28 @@ module ImageWritr {
         /**
          * 
          */
-        private initializePalettes(): void {
-            var section: HTMLElement = <HTMLElement>document.querySelector(this.sectionSelector),
+        private initializeTextInput(textInputSelector: string): void {
+            var self: any = this;
+            (<HTMLElement>document.querySelector(textInputSelector))
+                .onkeypress = function(key: KeyboardEvent): void {
+                    if (key.which !== 13) { return; }
+
+                    self.PixelRender = new PixelRendr.PixelRendr({
+                        "paletteDefault": self.palettes[self.palette],
+                        "library": { "sprite": this.value }
+                    });
+
+                    self.processSprite(
+                        "sprite",
+                        self.PixelRender.getBaseLibrary().sprite.length / 4 );
+                };
+        }
+
+        /**
+         *
+         */
+        private initializePalettes(sectionSelector: string): void {
+            var section: HTMLElement = <HTMLElement>document.querySelector(sectionSelector),
                 name: string,
                 element: HTMLElement,
                 chosen: HTMLElement;
@@ -258,7 +266,6 @@ module ImageWritr {
          */
         private handleFileDrop(input: HTMLInputElement, event: DragEvent): void {
             var files: FileList = input.files || event.dataTransfer.files,
-                // output: HTMLElement = <HTMLElement>document.querySelector(this.outputSelector),
                 elements: IWorkerHTMLElement[] = [],
                 file: File,
                 tag: string,
@@ -288,7 +295,8 @@ module ImageWritr {
 
             /*
             for (i = 0; i < elements.length; i += 1) {
-                output.insertBefore(elements[i], output.firstElementChild);
+                this.output.insertBefore(
+                    elements[i], this.output.firstElementChild );
             }
             */
         }
@@ -370,9 +378,8 @@ module ImageWritr {
             this.spriteDrawers.push( new SpriteDrawr(
                 this.PixelRender, key, value,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
-            var output: HTMLElement = <HTMLElement>document.querySelector(
-                this.outputSelector);
-            output.insertBefore(e.container, output.firstElementChild);
+            this.output.insertBefore(
+                e.container, this.output.firstElementChild );
             e.container.className = "output output-complete";
         }
 
@@ -509,20 +516,6 @@ module ImageWritr {
             chooser.click();
         }
     }
-
-/*
-    export function processInput(
-        inputString: string,
-        output: HTMLElement,
-        spriteDrawers: any[])
-    : void {
-        var pr: PixelRendr.IPixelRendr = createPixelRender( inputString );
-        var e: ISpriteDrawrDomElements = createDomElements();
-        spriteDrawers.push( new SpriteDrawr(
-            pr, e.left, e.right, e.width, e.height, e.canvas, e.link) );
-        output.insertBefore( e.container, output.firstElementChild );
-    }
-*/
 
     function createDomElements(): any {
         var e: any = {

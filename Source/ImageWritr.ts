@@ -129,9 +129,6 @@ module ImageWritr {
             surround.className = "palette";
             label.className = "palette-label";
             container.className = "palette-container";
-
-            surround.onclick = this.choosePalette.bind(this, surround, name, palette);
-
             label.textContent = "Palette: " + name;
 
             for (i = 0; i < palette.length; i += 1) {
@@ -148,6 +145,17 @@ module ImageWritr {
                 container.appendChild(boxOut);
             }
 
+            for (var n: number = 2; this.palettes[name]; ++n) {
+                if (n === 2) {
+                    name += "_2";
+                } else {
+                    name = name.substring( 0, name.lastIndexOf("_") ) + n;
+                }
+            }
+            this.palettes[name] = <number[][]>palette;
+
+            surround.onclick =
+                this.choosePalette.bind(this, surround, name, palette);
             surround.appendChild(label);
             surround.appendChild(container);
 

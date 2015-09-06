@@ -35,9 +35,14 @@ module ImageWritr {
         private allowedJS: { [i: string]: boolean; };
 
         /**
-         * 
+         *
          */
         private output: HTMLElement;
+
+        /**
+         *
+         */
+        private paletteSection: HTMLElement;
 
         /**
          *
@@ -91,12 +96,13 @@ module ImageWritr {
          *
          */
         private initializePalettes(sectionSelector: string): void {
-            var section: HTMLElement = <HTMLElement>document.querySelector(sectionSelector),
-                name: string,
+            this.paletteSection = <HTMLElement>document.querySelector(
+                sectionSelector);
+            this.paletteSection.appendChild(this.initializePaletteUploader());
+
+            var name: string,
                 element: HTMLElement,
                 chosen: HTMLElement;
-
-            section.appendChild(this.initializePaletteUploader());
 
             for (name in this.palettes) {
                 if (!this.palettes.hasOwnProperty(name)) {
@@ -104,7 +110,7 @@ module ImageWritr {
                 }
 
                 element = this.initializePalette(name, this.palettes[name]);
-                section.appendChild(element);
+                this.paletteSection.appendChild(element);
 
                 if (name === this.paletteDefault) {
                     chosen = element;
@@ -528,7 +534,7 @@ module ImageWritr {
             element.className = "output output-complete";
             element.innerText = "Created " + file.name + " palette (" + colors.length + " colors).";
 
-            document.querySelector("#palettes").appendChild(chooser);
+            this.paletteSection.appendChild(chooser);
 
             element.appendChild(displayResult);
 

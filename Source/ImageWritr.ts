@@ -47,6 +47,11 @@ module ImageWritr {
         /**
          *
          */
+        private paletteIdPrefix: string;
+
+        /**
+         *
+         */
         private spriteDrawers: SpriteDrawr[];
 
         /**
@@ -61,6 +66,7 @@ module ImageWritr {
             this.palette = settings.paletteDefault;
             this.output = <HTMLElement>document.querySelector(
                 settings.outputSelector);
+            this.paletteIdPrefix = "palette_";
 
             this.initializePalettes(settings.sectionSelector);
             this.initializeInput(settings.inputSelector);
@@ -151,6 +157,7 @@ module ImageWritr {
                 container.appendChild(boxOut);
             }
 
+            name = name.replace(/[^a-zA-Z0-9_\-]/g, "");
             for (var n: number = 2; this.palettes[name]; ++n) {
                 if (n === 2) {
                     name += "_2";
@@ -158,10 +165,10 @@ module ImageWritr {
                     name = name.substring( 0, name.lastIndexOf("_") ) + n;
                 }
             }
-            this.palettes[name] = <number[][]>palette;
 
             surround.onclick =
                 this.choosePalette.bind(this, surround, name, palette);
+            surround.id = this.paletteIdPrefix + name;
             surround.appendChild(label);
             surround.appendChild(container);
 
@@ -193,7 +200,7 @@ module ImageWritr {
         /**
          * 
          */
-        private choosePalette(element: HTMLElement, name: string, palette: number[][], event: Event): void {
+        private choosePalette(element: HTMLElement, name: string, palette: number[][], event?: Event): void {
             var elements: HTMLCollection = element.parentElement.children,
                 i: number;
 
@@ -516,9 +523,36 @@ module ImageWritr {
          * 
          */
         private workerPaletteFinish(colors: Uint8ClampedArray[], file: File, element: HTMLElement, src: string): void {
-            var chooser: HTMLDivElement = this.initializePalette(file.name, colors),
-                displayResult: HTMLInputElement = document.createElement("input");
+            var key: string;
+            for (key in this.palettes) {
+                if ( this.palettes[key].constructor === Array
+                    && this.palettes[key].length === colors.length
+                ) {
+                    var equal: boolean = true;
+                    for (var i: number = 0; i < colors.length; ++i) {
+                        if ( !arraysEqual(this.palettes[key][i], colors[i]) ) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                    if (equal) {
+                        this.choosePalette(
+                            <HTMLElement>document.querySelector(
+                                "#" + this.paletteIdPrefix + key),
+                            key, this.palettes[key] );
+                        return;
+                    }
+                }
+            }
 
+            var chooser: HTMLDivElement =
+                    this.initializePalette(file.name, colors),
+                displayResult: HTMLInputElement =
+                    document.createElement("input"),
+                paletteKey: string =
+                    chooser.id.substring(this.paletteIdPrefix.length);
+
+            this.palettes[paletteKey] = <any>colors;
             chooser.style.backgroundImage = "url('" + src + "')";
 
             displayResult.spellcheck = false;
@@ -685,6 +719,15 @@ module ImageWritr {
         }
 
         return dims;
+    }
+
+    function arraysEqual(a: number[], b: Uint8ClampedArray): boolean {
+        var i: number = a.length;
+        if (i !== b.length) { return false; }
+        while (i--) {
+            if (a[i] !== b[i]) { return false; }
+        }
+        return true;
     }
 }
 

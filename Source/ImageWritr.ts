@@ -157,7 +157,9 @@ module ImageWritr {
                 container.appendChild(boxOut);
             }
 
-            name = generatePaletteName(name, this.palettes);
+            delete this.palettes[name];
+            name = generatePaletteId(name, this.palettes);
+            this.palettes[name] = <any>palette;
 
             surround.onclick =
                 this.choosePalette.bind(this, surround, name, palette);
@@ -338,6 +340,11 @@ module ImageWritr {
                 settings.scale = 1;
                 self.PixelRender = new PixelRendr.PixelRendr( settings );
                 self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
+                var element: HTMLElement = document.createElement("div");
+                self.workerPaletteFinish(
+                    settings.paletteDefault, file.name, element, "" );
+                self.output.insertBefore(
+                    element, self.output.firstElementChild );
             };
             reader.readAsText(file);
         }
@@ -507,32 +514,43 @@ module ImageWritr {
 
             this.workerPaletteFinish(
                 this.PixelRender.generatePaletteFromRawData(<Uint8ClampedArray>data, true, true),
-                file,
+                file.name,
                 element,
                 src);
         }
 
         /**
-         * 
+         *
          */
-        private workerPaletteFinish(colors: Uint8ClampedArray[], file: File, element: HTMLElement, src: string): void {
-            var key: string = findPaletteKey(colors, this.palettes);
+        private selectExistingPalette(
+            palette: number[][] | Uint8ClampedArray[] )
+        : boolean {
+            var key: string = findPaletteKey(palette, this.palettes);
             if (key) {
                 this.choosePalette(
                     <HTMLElement>document.querySelector(
                         "#" + this.paletteIdPrefix + key),
                     key, this.palettes[key] );
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         *
+         */
+        private workerPaletteFinish(colors: Uint8ClampedArray[], filename: string, element: HTMLElement, src: string): void {
+            if (this.selectExistingPalette(colors)) {
+                element.className = "output output-failed";
+                element.innerText =
+                    "This palette is already loaded. It is now selected.";
                 return;
             }
 
-            var chooser: HTMLDivElement =
-                    this.initializePalette(file.name, colors),
-                displayResult: HTMLInputElement =
-                    document.createElement("input"),
-                paletteKey: string =
-                    chooser.id.substring(this.paletteIdPrefix.length);
+            var chooser: HTMLDivElement = this.initializePalette(filename, colors),
+                displayResult: HTMLInputElement = document.createElement("input");
 
-            this.palettes[paletteKey] = <any>colors;
             chooser.style.backgroundImage = "url('" + src + "')";
 
             displayResult.spellcheck = false;
@@ -542,11 +560,11 @@ module ImageWritr {
 
             if (colors.length > 999) {
                 element.className = "output output-failed";
-                element.innerText = "Too many colors (>999) in " + file.name + " palette.";
+                element.innerText = "Too many colors (>999) in " + filename + " palette.";
             }
 
             element.className = "output output-complete";
-            element.innerText = "Created " + file.name + " palette (" + colors.length + " colors).";
+            element.innerText = "Created " + filename + " palette (" + colors.length + " colors).";
 
             this.paletteSection.appendChild(chooser);
 
@@ -701,7 +719,8 @@ module ImageWritr {
         return dims;
     }
 
-    function arraysEqual(a: number[], b: Uint8ClampedArray): boolean {
+    function arraysEqual(a: number[], b: number[] | Uint8ClampedArray)
+    : boolean {
         var i: number = a.length;
         if (i !== b.length) { return false; }
         while (i--) {
@@ -710,7 +729,7 @@ module ImageWritr {
         return true;
     }
 
-    function generatePaletteName(
+    function generatePaletteId(
         basename: string,
         palettes: {[i: string]: number[][]})
     : string {
@@ -719,14 +738,14 @@ module ImageWritr {
             if (n === 2) {
                 name += "_2";
             } else {
-                name = name.substring( 0, name.lastIndexOf("_") ) + n;
+                name = name.substring( 0, name.lastIndexOf("_") + 1 ) + n;
             }
         }
         return name;
     }
 
     function findPaletteKey(
-        palette: Uint8ClampedArray[],
+        palette: number[][] | Uint8ClampedArray[],
         palettes: {[i: string]: number[][]})
     : string {
         var key: string;

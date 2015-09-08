@@ -88,9 +88,13 @@ module ImageWritr {
          * 
          */
         private initializeTextInput(textInputSelector: string): void {
+            var textInput: HTMLElement =
+                <HTMLElement>document.querySelector(textInputSelector);
+            textInput.onclick = function(e: Event): void {
+                e.stopPropagation();
+            };
             var self: any = this;
-            (<HTMLElement>document.querySelector(textInputSelector))
-                .onkeypress = function(key: KeyboardEvent): void {
+            textInput.onkeypress = function(key: KeyboardEvent): void {
                     if (key.which !== 13) { return; }
 
                     self.PixelRender = new PixelRendr.PixelRendr({

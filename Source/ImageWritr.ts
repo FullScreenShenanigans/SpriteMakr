@@ -454,21 +454,13 @@ module ImageWritr {
         /**
          * 
          */
-        private workerStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
-            var displayBase64: HTMLInputElement = document.createElement("input");
-
+        private workerStartWorking(resultBase64: string, file: File, element: HTMLElement, event: Event): void {
             element.className = "output output-working";
             element.innerText = "Working on " + file.name + "...";
-
-            displayBase64.spellcheck = false;
-            displayBase64.className = "selectable";
-            displayBase64.type = "text";
-            displayBase64.setAttribute("value", result);
-
             element.appendChild(document.createElement("br"));
-            element.appendChild(displayBase64);
+            element.appendChild( setupTextInput(resultBase64) );
 
-            this.parseBase64Image(file, result, this.workerFinishRender.bind(this, file, element));
+            this.parseBase64Image(file, resultBase64, this.workerFinishRender.bind(this, file, element));
         }
 
         /**
@@ -484,18 +476,10 @@ module ImageWritr {
          * 
          */
         private workerFinishRender(file: File, element: HTMLElement, result: string, image: HTMLImageElement): void {
-            var displayResult: HTMLInputElement = document.createElement("input");
-
-            displayResult.spellcheck = false;
-            displayResult.className = "selectable";
-            displayResult.type = "text";
-            displayResult.setAttribute("value", result);
-
             element.firstChild.textContent = "Finished '" + file.name + "' ('" + element.getAttribute("palette") + "' palette).";
             element.className = "output output-complete";
             element.style.backgroundImage = "url('" + image.src + "')";
-
-            element.appendChild(displayResult);
+            element.appendChild( setupTextInput(result) );
         }
 
         /**
@@ -560,31 +544,37 @@ module ImageWritr {
                 return;
             }
 
-            var chooser: HTMLDivElement = this.initializePalette(filename, colors),
-                displayResult: HTMLInputElement = document.createElement("input");
-
+            var chooser: HTMLDivElement =
+                this.initializePalette(filename, colors);
             chooser.style.backgroundImage = "url('" + src + "')";
-
-            displayResult.spellcheck = false;
-            displayResult.className = "selectable";
-            displayResult.type = "text";
-            displayResult.setAttribute("value", "[ [" + colors.join("], [") + "] ]");
 
             if (colors.length > 999) {
                 element.className = "output output-failed";
-                element.innerText = "Too many colors (>999) in " + filename + " palette.";
+                element.innerText = "Too many colors (>999) in "
+                    + filename + " palette.";
             }
 
             element.className = "output output-complete";
-            element.innerText = "Created " + filename + " palette (" + colors.length + " colors).";
+            element.innerText = "Created " + filename + " palette ("
+                + colors.length + " colors).";
 
             this.paletteSection.appendChild(chooser);
 
-            element.appendChild(displayResult);
+            element.appendChild(
+                setupTextInput("[ [" + colors.join("], [") + "] ]") );
 
             chooser.click();
             element.setAttribute("palette", this.palette);
         }
+    }
+
+    function setupTextInput(value: string): HTMLInputElement {
+        var textInput: HTMLInputElement = document.createElement("input");
+        textInput.spellcheck = false;
+        textInput.className = "selectable";
+        textInput.type = "text";
+        textInput.setAttribute("value", value);
+        return textInput;
     }
 
     function createDomElements(): any {

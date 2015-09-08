@@ -338,13 +338,16 @@ module ImageWritr {
                 // Leave default values to make sure we can draw the sprite.
                 settings.spriteWidth = settings.spriteHeight = "";
                 settings.scale = 1;
-                self.PixelRender = new PixelRendr.PixelRendr( settings );
-                self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
                 var element: HTMLElement = document.createElement("div");
+                element.className = "output output-uploading";
+                element.innerText = "Generating '" + file.name + "'...";
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
+                element.setAttribute("palette", self.palette);
                 self.output.insertBefore(
                     element, self.output.firstElementChild );
+                self.PixelRender = new PixelRendr.PixelRendr( settings );
+                self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
             };
             reader.readAsText(file);
         }
@@ -412,6 +415,7 @@ module ImageWritr {
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
             this.output.insertBefore(
                 e.container, this.output.firstElementChild );
+            e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
         }
 

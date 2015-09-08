@@ -373,8 +373,8 @@ module ImageWritr {
             element.setAttribute("palette", this.palette);
             element.innerText = "Uploading '" + file.name + "'...";
 
-            reader.onprogress = this.workerUpdateProgress.bind(this, file, element);
-            reader.onloadend = this.workerTryStartWorking.bind(this, file, element);
+            reader.onprogress = this.workerUpdateProgress.bind(this, file.name, element);
+            reader.onloadend = this.workerTryStartWorking.bind(this, file.name, element);
             reader.readAsDataURL(file);
 
             return element;
@@ -383,37 +383,37 @@ module ImageWritr {
         /**
          * 
          */
-        private workerUpdateProgress(file: File, element: HTMLElement, event: ProgressEvent): void {
+        private workerUpdateProgress(filename: string, element: HTMLElement, event: ProgressEvent): void {
             if (!event.lengthComputable) {
                 return;
             }
 
             var percent: number = Math.min(Math.round((event.loaded / event.total) * 100), 100);
 
-            element.innerText = "Uploading '" + file.name + "' (" + percent + "%)...";
+            element.innerText = "Uploading '" + filename + "' (" + percent + "%)...";
         }
 
         /**
          * 
          */
-        private workerTryStartWorking(file: File, element: IWorkerHTMLElement, event: ProgressEvent): void {
+        private workerTryStartWorking(filename: string, element: IWorkerHTMLElement, event: ProgressEvent): void {
             var result: string = (<any>event.currentTarget).result;
 
             if (element.workerCallback) {
-                element.workerCallback(result, file, element, event);
+                element.workerCallback(result, filename, element, event);
             } else {
-                this.workerTryStartWorkingDefault(result, file, element, event);
+                this.workerTryStartWorkingDefault(result, filename, element, event);
             }
         }
 
         /**
          * 
          */
-        private workerTryStartWorkingDefault(result: string, file: File, element: HTMLElement, event: Event): void {
+        private workerTryStartWorkingDefault(result: string, filename: string, element: HTMLElement, event: Event): void {
             if (result.length > 100000) {
-                this.workerCannotStartWorking(result, file, element, event);
+                this.workerCannotStartWorking(result, filename, element, event);
             } else {
-                this.workerStartWorking(result, file, element, event);
+                this.workerStartWorking(result, filename, element, event);
             }
         }
 
@@ -446,27 +446,27 @@ module ImageWritr {
         /**
          * 
          */
-        private workerCannotStartWorking(result: string, file: File, element: HTMLElement, event: Event): void {
-            element.innerText = "'" + file.name + "' is too big! Use a smaller file.";
+        private workerCannotStartWorking(result: string, filename: string, element: HTMLElement, event: Event): void {
+            element.innerText = "'" + filename + "' is too big! Use a smaller file.";
             element.className = "output output-failed";
         }
 
         /**
          * 
          */
-        private workerStartWorking(resultBase64: string, file: File, element: HTMLElement, event: Event): void {
+        private workerStartWorking(resultBase64: string, filename: string, element: HTMLElement, event: Event): void {
             element.className = "output output-working";
-            element.innerText = "Working on " + file.name + "...";
+            element.innerText = "Working on " + filename + "...";
             element.appendChild(document.createElement("br"));
             element.appendChild( setupTextInput(resultBase64) );
 
-            this.parseBase64Image(file, resultBase64, this.workerFinishRender.bind(this, file, element));
+            this.parseBase64Image(resultBase64, this.workerFinishRender.bind(this, filename, element));
         }
 
         /**
          * 
          */
-        private parseBase64Image(file: File, src: string, callback: PixelRendr.IPixelRendrEncodeCallback): void {
+        private parseBase64Image(src: string, callback: PixelRendr.IPixelRendrEncodeCallback): void {
             var image: HTMLImageElement = document.createElement("img");
             image.onload = this.PixelRender.encode.bind(this.PixelRender, image, callback);
             image.src = src;
@@ -475,8 +475,8 @@ module ImageWritr {
         /**
          * 
          */
-        private workerFinishRender(file: File, element: HTMLElement, result: string, image: HTMLImageElement): void {
-            element.firstChild.textContent = "Finished '" + file.name + "' ('" + element.getAttribute("palette") + "' palette).";
+        private workerFinishRender(filename: string, element: HTMLElement, result: string, image: HTMLImageElement): void {
+            element.firstChild.textContent = "Finished '" + filename + "' ('" + element.getAttribute("palette") + "' palette).";
             element.className = "output output-complete";
             element.style.backgroundImage = "url('" + image.src + "')";
             element.appendChild( setupTextInput(result) );
@@ -485,19 +485,19 @@ module ImageWritr {
         /**
          * 
          */
-        private workerPaletteUploaderStart(result: string, file: File, element: HTMLElement, event: Event): void {
+        private workerPaletteUploaderStart(result: string, filename: string, element: HTMLElement, event: Event): void {
             var image: HTMLImageElement = document.createElement("img");
-            image.onload = this.workerPaletteCollect.bind(this, image, file, element, result);
+            image.onload = this.workerPaletteCollect.bind(this, image, filename, element, result);
             image.src = result;
 
             element.className = "output output-working";
-            element.innerText = "Working on " + file.name + "...";
+            element.innerText = "Working on " + filename + "...";
         }
 
         /**
          * 
          */
-        private workerPaletteCollect(image: HTMLImageElement, file: File, element: HTMLElement, src: string, event: Event): void {
+        private workerPaletteCollect(image: HTMLImageElement, filename: string, element: HTMLElement, src: string, event: Event): void {
             var canvas: HTMLCanvasElement = document.createElement("canvas"),
                 context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext("2d"),
                 data: Uint8ClampedArray;
@@ -511,7 +511,7 @@ module ImageWritr {
 
             this.workerPaletteFinish(
                 this.PixelRender.generatePaletteFromRawData(<Uint8ClampedArray>data, true, true),
-                file.name,
+                filename,
                 element,
                 src);
         }

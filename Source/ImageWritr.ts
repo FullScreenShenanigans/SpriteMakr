@@ -522,9 +522,7 @@ module ImageWritr {
         /**
          *
          */
-        private selectExistingPalette(
-            palette: number[][] | Uint8ClampedArray[] )
-        : boolean {
+        private selectExistingPalette(palette: Uint8ClampedArray[]): boolean {
             var key: string = findPaletteKey(palette, this.palettes);
             if (key) {
                 this.choosePalette(
@@ -719,8 +717,7 @@ module ImageWritr {
         return dims;
     }
 
-    function arraysEqual(a: number[], b: number[] | Uint8ClampedArray)
-    : boolean {
+    function arraysEqual(a: number[], b: Uint8ClampedArray): boolean {
         var i: number = a.length;
         if (i !== b.length) { return false; }
         while (i--) {
@@ -745,7 +742,7 @@ module ImageWritr {
     }
 
     function findPaletteKey(
-        palette: number[][] | Uint8ClampedArray[],
+        palette: Uint8ClampedArray[],
         palettes: {[i: string]: number[][]})
     : string {
         var key: string;

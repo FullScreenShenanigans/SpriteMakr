@@ -343,7 +343,6 @@ module ImageWritr {
                 element.innerText = "Generating '" + file.name + "'...";
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
-                element.setAttribute("palette", self.palette);
                 self.output.insertBefore(
                     element, self.output.firstElementChild );
                 self.PixelRender = new PixelRendr.PixelRendr( settings );
@@ -545,6 +544,7 @@ module ImageWritr {
         private workerPaletteFinish(colors: Uint8ClampedArray[], filename: string, element: HTMLElement, src: string): void {
             if (this.selectExistingPalette(colors)) {
                 element.className = "output output-failed";
+                element.setAttribute("palette", this.palette);
                 element.innerText =
                     "This palette is already loaded. It is now selected.";
                 return;
@@ -573,6 +573,7 @@ module ImageWritr {
             element.appendChild(displayResult);
 
             chooser.click();
+            element.setAttribute("palette", this.palette);
         }
     }
 

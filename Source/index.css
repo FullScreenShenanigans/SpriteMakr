@@ -125,6 +125,15 @@ body {
         border-color: #aaa;
     }
 
+    #input input[type=text] {
+        display: block;
+        position: relative;
+        width: 98%;
+        left: 1%;
+        right: 1%;
+        text-align: center;
+    }
+
 input[type=file] {
     position: absolute;
     left: -100%;
@@ -175,7 +184,6 @@ input[type=file] {
         background-color: #daffdf;
     }
 
-/*
     .output input[type=text] {
         display: block;
         position: relative;
@@ -184,10 +192,12 @@ input[type=file] {
         right: 1%;
         text-align: center;
     }
-*/
-    .output input[type=text] {
+
+    .output input[type=text].size-display {
+        display: inline;
+        left: 0%;
+        right: 0%;
         width: 2em;
-        text-align: center;
     }
 
     .output canvas {
@@ -195,15 +205,4 @@ input[type=file] {
         border: solid gray;
         border-width: 1px;
     }
-
-/*
-    #input input[type=text] {
-        display: block;
-        position: relative;
-        width: 98%;
-        left: 1%;
-        right: 1%;
-        text-align: center;
-    }
-*/
 

@@ -597,6 +597,7 @@ module ImageWritr {
             link   : document.createElement( "a" ),
             canvas : document.createElement( "canvas" )
         };
+        e.width.className = e.height.className = "size-display";
         e.container.appendChild( e.left );
         e.container.appendChild( e.right );
         e.container.appendChild( document.createElement("br") );

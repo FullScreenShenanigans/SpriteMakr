@@ -157,14 +157,7 @@ module ImageWritr {
                 container.appendChild(boxOut);
             }
 
-            name = name.replace(/[^a-zA-Z0-9_\-]/g, "");
-            for (var n: number = 2; this.palettes[name]; ++n) {
-                if (n === 2) {
-                    name += "_2";
-                } else {
-                    name = name.substring( 0, name.lastIndexOf("_") ) + n;
-                }
-            }
+            name = generatePaletteName(name, this.palettes);
 
             surround.onclick =
                 this.choosePalette.bind(this, surround, name, palette);
@@ -523,26 +516,13 @@ module ImageWritr {
          * 
          */
         private workerPaletteFinish(colors: Uint8ClampedArray[], file: File, element: HTMLElement, src: string): void {
-            var key: string;
-            for (key in this.palettes) {
-                if ( this.palettes[key].constructor === Array
-                    && this.palettes[key].length === colors.length
-                ) {
-                    var equal: boolean = true;
-                    for (var i: number = 0; i < colors.length; ++i) {
-                        if ( !arraysEqual(this.palettes[key][i], colors[i]) ) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                    if (equal) {
-                        this.choosePalette(
-                            <HTMLElement>document.querySelector(
-                                "#" + this.paletteIdPrefix + key),
-                            key, this.palettes[key] );
-                        return;
-                    }
-                }
+            var key: string = findPaletteKey(colors, this.palettes);
+            if (key) {
+                this.choosePalette(
+                    <HTMLElement>document.querySelector(
+                        "#" + this.paletteIdPrefix + key),
+                    key, this.palettes[key] );
+                return;
             }
 
             var chooser: HTMLDivElement =
@@ -729,5 +709,43 @@ module ImageWritr {
         }
         return true;
     }
+
+    function generatePaletteName(
+        basename: string,
+        palettes: {[i: string]: number[][]})
+    : string {
+        var name: string = basename.replace(/[^a-zA-Z0-9_\-]/g, "");
+        for (var n: number = 2; palettes[name]; ++n) {
+            if (n === 2) {
+                name += "_2";
+            } else {
+                name = name.substring( 0, name.lastIndexOf("_") ) + n;
+            }
+        }
+        return name;
+    }
+
+    function findPaletteKey(
+        palette: Uint8ClampedArray[],
+        palettes: {[i: string]: number[][]})
+    : string {
+        var key: string;
+        for (key in palettes) {
+            if ( palettes[key].constructor === Array
+                && palettes[key].length === palette.length
+            ) {
+                var equal: boolean = true;
+                for (var i: number = 0; i < palette.length; ++i) {
+                    if ( !arraysEqual(palettes[key][i], palette[i]) ) {
+                        equal = false;
+                        break;
+                    }
+                }
+                if (equal) { return key; }
+            }
+        }
+        return "";
+    }
+
 }
 

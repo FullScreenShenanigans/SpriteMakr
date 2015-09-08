@@ -6,6 +6,7 @@ declare module ImageWritr {
     }
 
     export interface IImageWritrSettings {
+        outputImageFormat: string,
         allowedImages: { [i: string]: boolean; };
         allowedJS: { [i: string]: boolean; };
         sectionSelector: string;

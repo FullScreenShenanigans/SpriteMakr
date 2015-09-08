@@ -6,6 +6,7 @@ document.onreadystatechange = function (event) {
     }
 
     window.ImageWriter = new ImageWritr.ImageWritr({
+        "outputImageFormat": "gif",
         "allowedJS": {
             "javascript": true
         },

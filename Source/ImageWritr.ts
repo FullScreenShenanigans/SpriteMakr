@@ -52,6 +52,11 @@ module ImageWritr {
         /**
          *
          */
+        private outputImageFormat: string;
+
+        /**
+         *
+         */
         private spriteDrawers: SpriteDrawr[];
 
         /**
@@ -67,6 +72,7 @@ module ImageWritr {
             this.output = <HTMLElement>document.querySelector(
                 settings.outputSelector);
             this.paletteIdPrefix = "palette_";
+            this.outputImageFormat = settings.outputImageFormat;
 
             this.initializePalettes(settings.sectionSelector);
             this.initializeInput(settings.inputSelector);
@@ -410,7 +416,7 @@ module ImageWritr {
         private processSprite(key: string, value: number): void {
             var e: any = createDomElements();
             this.spriteDrawers.push( new SpriteDrawr(
-                this.PixelRender, key, value,
+                this.PixelRender, key, value, this.outputImageFormat,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
             this.output.insertBefore(
                 e.container, this.output.firstElementChild );
@@ -615,6 +621,7 @@ module ImageWritr {
         private pixelRender: PixelRendr.IPixelRendr;
         private spriteKey: string;
         private dims: number[][];
+        private outputFormat: string;
         private dimIndex: number;
         private canvas: HTMLCanvasElement;
         private widthText: HTMLInputElement;
@@ -627,6 +634,7 @@ module ImageWritr {
             pixelRender: PixelRendr.IPixelRendr,
             spriteKey: string,
             nPixels: number,
+            outputFormat: string,
             leftButton: HTMLInputElement,
             rightButton: HTMLInputElement,
             widthText: HTMLInputElement,
@@ -636,6 +644,7 @@ module ImageWritr {
         ) {
             this.pixelRender = pixelRender;
             this.spriteKey = spriteKey;
+            this.outputFormat = outputFormat;
             this.dims = calculatePossibleDimensions(nPixels);
             this.dimIndex = Math.floor( (this.dims.length - 1) / 2 );
             this.canvas = canvas;
@@ -695,8 +704,9 @@ module ImageWritr {
             context.putImageData(imageData, 0, 0);
 
             (<any>this.link).download =
-                this.spriteKey.replace(/ /g, "_") + ".png";
-            this.link.href = this.canvas.toDataURL("image/png");
+                this.spriteKey.replace(/ /g, "_") + "." + this.outputFormat;
+            this.link.href = this.canvas.toDataURL(
+                "image/" + this.outputFormat );
         }
     }
 

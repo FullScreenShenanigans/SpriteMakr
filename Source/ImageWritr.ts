@@ -139,7 +139,7 @@ module ImageWritr {
         /**
          * 
          */
-        private initializePalette(name: string, palette: number[][]| Uint8ClampedArray[]): HTMLDivElement {
+        private initializePalette(name: string, palette: number[][] | Uint8ClampedArray[]): HTMLDivElement {
             var surround: HTMLDivElement = document.createElement("div"),
                 label: HTMLHeadingElement = document.createElement("h4"),
                 container: HTMLDivElement = document.createElement("div"),
@@ -333,8 +333,7 @@ module ImageWritr {
             }
 
             for (i = 0; i < elements.length; i += 1) {
-                this.output.insertBefore(
-                    elements[i], this.output.firstElementChild );
+                insertBeforeChildElements(this.output, elements[i]);
             }
         }
 
@@ -353,8 +352,7 @@ module ImageWritr {
                 element.textContent = "Generating '" + file.name + "'...";
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
-                self.output.insertBefore(
-                    element, self.output.firstElementChild );
+                insertBeforeChildElements(self.output, element);
                 self.PixelRender = new PixelRendr.PixelRendr( settings );
                 self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
             };
@@ -422,10 +420,15 @@ module ImageWritr {
             this.spriteDrawers.push( new SpriteDrawr(
                 this.PixelRender, key, value, this.outputImageFormat,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
-            this.output.insertBefore(
-                e.container, this.output.firstElementChild );
+            insertBeforeChildElements(this.output, e.container);
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
+            insertBeforeChildElements(
+                e.container, document.createTextNode(
+                    "Finished '" + key + "' ('" + this.palette
+                    + "' palette)." ) );
+            insertBeforeChildElements(
+                e.container, document.createElement("br") );
         }
 
         private traverseSpriteLibrary(o: Object, prevKey: string = ""): void {
@@ -773,5 +776,10 @@ module ImageWritr {
         return "";
     }
 
+    function insertBeforeChildElements(parent: HTMLElement, child: Node)
+    : HTMLElement {
+        parent.insertBefore(child, parent.firstElementChild);
+        return parent;
+    }
 }
 

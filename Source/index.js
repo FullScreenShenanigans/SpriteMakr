@@ -8,7 +8,8 @@ document.onreadystatechange = function (event) {
     window.ImageWriter = new ImageWritr.ImageWritr({
         "outputImageFormat": "gif",
         "allowedJS": {
-            "javascript": true
+            "javascript": true,
+            "x-javascript": true
         },
         "allowedImages": {
             "gif": true,

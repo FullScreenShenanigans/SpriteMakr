@@ -350,7 +350,7 @@ module ImageWritr {
                 settings.scale = 1;
                 var element: HTMLElement = document.createElement("div");
                 element.className = "output output-uploading";
-                element.innerText = "Generating '" + file.name + "'...";
+                element.textContent = "Generating '" + file.name + "'...";
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
                 self.output.insertBefore(
@@ -371,7 +371,7 @@ module ImageWritr {
             element.workerCallback = target.workerCallback;
             element.className = "output output-uploading";
             element.setAttribute("palette", this.palette);
-            element.innerText = "Uploading '" + file.name + "'...";
+            element.textContent = "Uploading '" + file.name + "'...";
 
             reader.onprogress = this.workerUpdateProgress.bind(this, file.name, element);
             reader.onloadend = this.workerTryStartWorking.bind(this, file.name, element);
@@ -390,7 +390,7 @@ module ImageWritr {
 
             var percent: number = Math.min(Math.round((event.loaded / event.total) * 100), 100);
 
-            element.innerText = "Uploading '" + filename + "' (" + percent + "%)...";
+            element.textContent = "Uploading '" + filename + "' (" + percent + "%)...";
         }
 
         /**
@@ -447,7 +447,7 @@ module ImageWritr {
          * 
          */
         private workerCannotStartWorking(result: string, filename: string, element: HTMLElement, event: Event): void {
-            element.innerText = "'" + filename + "' is too big! Use a smaller file.";
+            element.textContent = "'" + filename + "' is too big! Use a smaller file.";
             element.className = "output output-failed";
         }
 
@@ -456,7 +456,7 @@ module ImageWritr {
          */
         private workerStartWorking(resultBase64: string, filename: string, element: HTMLElement, event: Event): void {
             element.className = "output output-working";
-            element.innerText = "Working on " + filename + "...";
+            element.textContent = "Working on " + filename + "...";
             element.appendChild(document.createElement("br"));
             element.appendChild( setupTextInput(resultBase64) );
 
@@ -491,7 +491,7 @@ module ImageWritr {
             image.src = result;
 
             element.className = "output output-working";
-            element.innerText = "Working on " + filename + "...";
+            element.textContent = "Working on " + filename + "...";
         }
 
         /**
@@ -539,7 +539,7 @@ module ImageWritr {
             if (this.selectExistingPalette(colors)) {
                 element.className = "output output-failed";
                 element.setAttribute("palette", this.palette);
-                element.innerText =
+                element.textContent =
                     "This palette is already loaded. It is now selected.";
                 return;
             }
@@ -550,12 +550,12 @@ module ImageWritr {
 
             if (colors.length > 999) {
                 element.className = "output output-failed";
-                element.innerText = "Too many colors (>999) in "
+                element.textContent = "Too many colors (>999) in "
                     + filename + " palette.";
             }
 
             element.className = "output output-complete";
-            element.innerText = "Created " + filename + " palette ("
+            element.textContent = "Created " + filename + " palette ("
                 + colors.length + " colors).";
 
             this.paletteSection.appendChild(chooser);

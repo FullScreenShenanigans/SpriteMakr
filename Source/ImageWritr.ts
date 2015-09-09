@@ -30,32 +30,32 @@ module ImageWritr {
         private allowedImages: { [i: string]: boolean; };
 
         /**
-         *
+         * 
          */
         private allowedJS: { [i: string]: boolean; };
 
         /**
-         *
+         * 
          */
         private output: HTMLElement;
 
         /**
-         *
+         * 
          */
         private paletteSection: HTMLElement;
 
         /**
-         *
+         * 
          */
         private paletteIdPrefix: string;
 
         /**
-         *
+         * 
          */
         private outputImageFormat: string;
 
         /**
-         *
+         * 
          */
         private spriteDrawers: SpriteDrawr[];
 
@@ -109,7 +109,7 @@ module ImageWritr {
         }
 
         /**
-         *
+         * 
          */
         private initializePalettes(sectionSelector: string): void {
             this.paletteSection = <HTMLElement>document.querySelector(
@@ -247,7 +247,7 @@ module ImageWritr {
             dummy.multiple = true;
             dummy.onchange = this.handleFileDrop.bind(this, dummy);
 
-            input.addEventListener("click", function (): void {
+            input.addEventListener("click", function(): void {
                 dummy.click();
             });
 
@@ -517,7 +517,7 @@ module ImageWritr {
         }
 
         /**
-         *
+         * 
          */
         private selectExistingPalette(palette: Uint8ClampedArray[]): boolean {
             var key: string = findPaletteKey(palette, this.palettes);
@@ -533,7 +533,7 @@ module ImageWritr {
         }
 
         /**
-         *
+         * 
          */
         private workerPaletteFinish(colors: Uint8ClampedArray[], filename: string, element: HTMLElement, src: string): void {
             if (this.selectExistingPalette(colors)) {

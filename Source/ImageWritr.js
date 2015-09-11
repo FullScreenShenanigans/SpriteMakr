@@ -1348,16 +1348,16 @@ var ImageWritr;
          *
          */
         function ImageWritr(settings) {
+            this.palettes = {};
             this.spriteDrawers = [];
+            this.paletteIdPrefix = "palette_";
             this.allowedJS = settings.allowedJS;
             this.allowedImages = settings.allowedImages;
-            this.paletteDefault = settings.paletteDefault;
-            this.palettes = settings.palettes;
             this.palette = settings.paletteDefault;
-            this.output = document.querySelector(settings.outputSelector);
-            this.paletteIdPrefix = "palette_";
             this.outputImageFormat = settings.outputImageFormat;
-            this.initializePalettes(settings.sectionSelector);
+            this.output = document.querySelector(settings.outputSelector);
+            this.paletteSection = document.querySelector(settings.sectionSelector);
+            this.initializePalettes(settings.palettes);
             this.initializeInput(settings.inputSelector);
             this.initializeTextInput(settings.textInputSelector);
         }
@@ -1387,17 +1387,16 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializePalettes = function (sectionSelector) {
-            this.paletteSection = document.querySelector(sectionSelector);
+        ImageWritr.prototype.initializePalettes = function (palettes) {
             this.paletteSection.appendChild(this.initializePaletteUploader());
             var name, element, chosen;
-            for (name in this.palettes) {
-                if (!this.palettes.hasOwnProperty(name)) {
+            for (name in palettes) {
+                if (!palettes.hasOwnProperty(name)) {
                     continue;
                 }
-                element = this.initializePalette(name, this.palettes[name]);
+                element = this.initializePalette(name, palettes[name]);
                 this.paletteSection.appendChild(element);
-                if (name === this.paletteDefault) {
+                if (name === this.palette) {
                     chosen = element;
                 }
             }
@@ -1422,7 +1421,6 @@ var ImageWritr;
                 boxOut.appendChild(boxIn);
                 container.appendChild(boxOut);
             }
-            delete this.palettes[name];
             name = generatePaletteId(name, this.palettes);
             this.palettes[name] = palette;
             surround.onclick =
@@ -1548,7 +1546,7 @@ var ImageWritr;
                 }
             }
             for (i = 0; i < elements.length; i += 1) {
-                insertAsFirstElementChild(this.output, elements[i]);
+                insertBeforeChildElements(this.output, elements[i]);
             }
         };
         ImageWritr.prototype.processSpriteLibrary = function (file) {
@@ -1564,7 +1562,7 @@ var ImageWritr;
                 element.className = "output output-uploading";
                 element.textContent = "Generating '" + file.name + "'...";
                 self.workerPaletteFinish(settings.paletteDefault, file.name, element, "");
-                insertAsFirstElementChild(self.output, element);
+                insertBeforeChildElements(self.output, element);
                 self.PixelRender = new PixelRendr.PixelRendr(settings);
                 self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
             };
@@ -1620,12 +1618,12 @@ var ImageWritr;
         ImageWritr.prototype.processSprite = function (key, value) {
             var e = createDomElements();
             this.spriteDrawers.push(new SpriteDrawr(this.PixelRender, key, value, this.outputImageFormat, e.left, e.right, e.width, e.height, e.canvas, e.link));
-            insertAsFirstElementChild(this.output, e.container);
+            insertBeforeChildElements(this.output, e.container);
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
-            insertAsFirstElementChild(e.container, document.createTextNode("Finished '" + key + "' ('" + this.palette
+            insertBeforeChildElements(e.container, document.createTextNode("Finished '" + key + "' ('" + this.palette
                 + "' palette)."));
-            insertAsFirstElementChild(e.container, document.createElement("br"));
+            insertBeforeChildElements(e.container, document.createElement("br"));
         };
         ImageWritr.prototype.traverseSpriteLibrary = function (o, prevKey) {
             if (prevKey === void 0) { prevKey = ""; }
@@ -1906,7 +1904,7 @@ var ImageWritr;
         }
         return "";
     }
-    function insertAsFirstElementChild(parent, child) {
+    function insertBeforeChildElements(parent, child) {
         parent.insertBefore(child, parent.firstElementChild);
         return parent;
     }

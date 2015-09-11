@@ -22,11 +22,6 @@ module ImageWritr {
         /**
          * 
          */
-        private paletteDefault: string;
-
-        /**
-         * 
-         */
         private allowedImages: { [i: string]: boolean; };
 
         /**
@@ -68,7 +63,6 @@ module ImageWritr {
             this.paletteIdPrefix = "palette_";
             this.allowedJS = settings.allowedJS;
             this.allowedImages = settings.allowedImages;
-            this.paletteDefault = settings.paletteDefault;
             this.palette = settings.paletteDefault;
             this.outputImageFormat = settings.outputImageFormat;
 
@@ -129,7 +123,7 @@ module ImageWritr {
                 element = this.initializePalette(name, palettes[name]);
                 this.paletteSection.appendChild(element);
 
-                if (name === this.paletteDefault) {
+                if (name === this.palette) {
                     chosen = element;
                 }
             }

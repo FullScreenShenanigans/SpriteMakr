@@ -63,18 +63,21 @@ module ImageWritr {
          * 
          */
         constructor(settings: IImageWritrSettings) {
+            this.palettes = {};
             this.spriteDrawers = [];
+            this.paletteIdPrefix = "palette_";
             this.allowedJS = settings.allowedJS;
             this.allowedImages = settings.allowedImages;
             this.paletteDefault = settings.paletteDefault;
-            this.palettes = settings.palettes;
             this.palette = settings.paletteDefault;
-            this.output = <HTMLElement>document.querySelector(
-                settings.outputSelector);
-            this.paletteIdPrefix = "palette_";
             this.outputImageFormat = settings.outputImageFormat;
 
-            this.initializePalettes(settings.sectionSelector);
+            this.output = <HTMLElement>document.querySelector(
+                settings.outputSelector);
+            this.paletteSection = <HTMLElement>document.querySelector(
+                settings.sectionSelector);
+
+            this.initializePalettes(settings.palettes);
             this.initializeInput(settings.inputSelector);
             this.initializeTextInput(settings.textInputSelector);
         }
@@ -111,21 +114,19 @@ module ImageWritr {
         /**
          * 
          */
-        private initializePalettes(sectionSelector: string): void {
-            this.paletteSection = <HTMLElement>document.querySelector(
-                sectionSelector);
+        private initializePalettes(palettes: {[i: string]: number[][]}): void {
             this.paletteSection.appendChild(this.initializePaletteUploader());
 
             var name: string,
                 element: HTMLElement,
                 chosen: HTMLElement;
 
-            for (name in this.palettes) {
-                if (!this.palettes.hasOwnProperty(name)) {
+            for (name in palettes) {
+                if (!palettes.hasOwnProperty(name)) {
                     continue;
                 }
 
-                element = this.initializePalette(name, this.palettes[name]);
+                element = this.initializePalette(name, palettes[name]);
                 this.paletteSection.appendChild(element);
 
                 if (name === this.paletteDefault) {
@@ -167,7 +168,6 @@ module ImageWritr {
                 container.appendChild(boxOut);
             }
 
-            delete this.palettes[name];
             name = generatePaletteId(name, this.palettes);
             this.palettes[name] = <any>palette;
 

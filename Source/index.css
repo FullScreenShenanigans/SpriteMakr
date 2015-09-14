@@ -184,6 +184,10 @@ input[type=file] {
         background-color: #daffdf;
     }
 
+    .output.output-info {
+        background-color: #ffffcc;
+    }
+
     .output input[type=text] {
         display: block;
         position: relative;

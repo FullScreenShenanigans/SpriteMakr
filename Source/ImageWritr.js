@@ -1712,7 +1712,7 @@ var ImageWritr;
          */
         ImageWritr.prototype.workerPaletteFinish = function (colors, filename, element, src) {
             if (this.selectExistingPalette(colors)) {
-                element.className = "output output-failed";
+                element.className = "output output-info";
                 element.setAttribute("palette", this.palette);
                 element.textContent =
                     "This palette is already loaded. It is now selected.";

@@ -534,7 +534,7 @@ module ImageWritr {
          */
         private workerPaletteFinish(colors: Uint8ClampedArray[], filename: string, element: HTMLElement, src: string): void {
             if (this.selectExistingPalette(colors)) {
-                element.className = "output output-failed";
+                element.className = "output output-info";
                 element.setAttribute("palette", this.palette);
                 element.textContent =
                     "This palette is already loaded. It is now selected.";

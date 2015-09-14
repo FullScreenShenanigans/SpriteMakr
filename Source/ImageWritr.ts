@@ -92,8 +92,9 @@ module ImageWritr {
             };
             var self: any = this;
             textInput.onkeypress = function(key: KeyboardEvent): void {
-                    if (key.which !== 13) { return; }
+                if (key.which !== 13) { return; }
 
+                try {
                     self.PixelRender = new PixelRendr.PixelRendr({
                         "paletteDefault": self.palettes[self.palette],
                         "library": { "sprite": this.value }
@@ -102,7 +103,10 @@ module ImageWritr {
                     self.processSprite(
                         "sprite",
                         self.PixelRender.getBaseLibrary().sprite.length / 4 );
-                };
+                } catch (e) {
+                    cannotCreatePixelRenderError(self.output);
+                }
+            };
         }
 
         /**
@@ -347,8 +351,13 @@ module ImageWritr {
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
                 insertBeforeChildElements(self.output, element);
-                self.PixelRender = new PixelRendr.PixelRendr( settings );
-                self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
+                try {
+                    self.PixelRender = new PixelRendr.PixelRendr(settings);
+                    self.traverseSpriteLibrary(
+                        self.PixelRender.getBaseLibrary() );
+                } catch (e) {
+                    cannotCreatePixelRenderError(self.output);
+                }
             };
             reader.readAsText(file);
         }
@@ -774,6 +783,13 @@ module ImageWritr {
     : HTMLElement {
         parent.insertBefore(child, parent.firstElementChild);
         return parent;
+    }
+
+    function cannotCreatePixelRenderError(output: HTMLElement): void {
+        var error: HTMLElement = document.createElement("div");
+        error.className = "output output-failed";
+        error.textContent = "String sprite may be incorrect or the palette have too few colors.";
+        insertBeforeChildElements(output, error);
     }
 }
 

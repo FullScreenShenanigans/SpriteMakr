@@ -1385,7 +1385,7 @@ var ImageWritr;
                     self.processSprite("sprite", self.PixelRender.getBaseLibrary().sprite.length / 4);
                 }
                 catch (e) {
-                    cannotCreatePixelRenderError(self.output);
+                    addErrorElement(self.output, "The input string sprite may be incorrect or the palette may have too few colors.");
                 }
             };
         };
@@ -1554,26 +1554,40 @@ var ImageWritr;
                 insertBeforeChildElements(this.output, elements[i]);
             }
         };
+        /**
+         *
+         */
         ImageWritr.prototype.processSpriteLibrary = function (file) {
             var self = this;
             var reader = new FileReader();
             reader.onloadend = function () {
-                var settings = new Function(this.result.replace(/^[^=]*=/, "return")
-                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'"))();
-                // Leave default values to make sure we can draw the sprite.
-                settings.spriteWidth = settings.spriteHeight = "";
-                settings.scale = 1;
+                var fileContents = this.result
+                    .replace(/^[^=]*=/, "return")
+                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'");
+                var settings;
+                try {
+                    settings = new Function(fileContents)();
+                }
+                catch (e) {
+                    addErrorElement(self.output, "'" + file.name
+                        + "' is not a correct Javascript file.");
+                    return;
+                }
                 var element = document.createElement("div");
                 element.className = "output output-uploading";
                 element.textContent = "Generating '" + file.name + "'...";
-                self.workerPaletteFinish(settings.paletteDefault, file.name, element, "");
                 insertBeforeChildElements(self.output, element);
+                self.workerPaletteFinish(settings.paletteDefault, file.name, element, "");
+                // Leave default values to make sure we can draw the sprites.
+                settings.spriteWidth = settings.spriteHeight = "";
+                settings.scale = 1;
                 try {
                     self.PixelRender = new PixelRendr.PixelRendr(settings);
                     self.traverseSpriteLibrary(self.PixelRender.getBaseLibrary());
                 }
                 catch (e) {
-                    cannotCreatePixelRenderError(self.output);
+                    addErrorElement(self.output, "A string sprite in '" + file.name
+                        + "' may be incorrect or the palette may have too few colors.");
                 }
             };
             reader.readAsText(file);
@@ -1625,16 +1639,22 @@ var ImageWritr;
                 this.workerStartWorking(result, filename, element, event);
             }
         };
+        /**
+         *
+         */
         ImageWritr.prototype.processSprite = function (key, value) {
             var e = createDomElements();
             this.spriteDrawers.push(new SpriteDrawr(this.PixelRender, key, value, this.outputImageFormat, e.left, e.right, e.width, e.height, e.canvas, e.link));
-            insertBeforeChildElements(this.output, e.container);
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
+            insertBeforeChildElements(this.output, e.container);
+            insertBeforeChildElements(e.container, document.createElement("br"));
             insertBeforeChildElements(e.container, document.createTextNode("Finished '" + key + "' ('" + this.palette
                 + "' palette)."));
-            insertBeforeChildElements(e.container, document.createElement("br"));
         };
+        /**
+         *
+         */
         ImageWritr.prototype.traverseSpriteLibrary = function (o, prevKey) {
             if (prevKey === void 0) { prevKey = ""; }
             var i;
@@ -1918,10 +1938,10 @@ var ImageWritr;
         parent.insertBefore(child, parent.firstElementChild);
         return parent;
     }
-    function cannotCreatePixelRenderError(output) {
+    function addErrorElement(output, message) {
         var error = document.createElement("div");
         error.className = "output output-failed";
-        error.textContent = "String sprite may be incorrect or the palette have too few colors.";
+        error.textContent = message;
         insertBeforeChildElements(output, error);
     }
 })(ImageWritr || (ImageWritr = {}));

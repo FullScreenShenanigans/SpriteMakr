@@ -104,7 +104,9 @@ module ImageWritr {
                         "sprite",
                         self.PixelRender.getBaseLibrary().sprite.length / 4 );
                 } catch (e) {
-                    cannotCreatePixelRenderError(self.output);
+                    addErrorElement(
+                        self.output,
+                        "The input string sprite may be incorrect or the palette may have too few colors." );
                 }
             };
         }
@@ -335,28 +337,44 @@ module ImageWritr {
             }
         }
 
+        /**
+         * 
+         */
         private processSpriteLibrary(file: File): void {
             var self: any = this;
             var reader: FileReader = new FileReader();
             reader.onloadend = function(): void {
-                var settings: PixelRendr.IPixelRendrSettings = new Function(
-                    this.result.replace(/^[^=]*=/, "return")
-                        .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'") )();
-                // Leave default values to make sure we can draw the sprite.
-                settings.spriteWidth = settings.spriteHeight = "";
-                settings.scale = 1;
+                var fileContents: string = this.result
+                    .replace(/^[^=]*=/, "return")
+                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'");
+                var settings: PixelRendr.IPixelRendrSettings;
+                try {
+                    settings = new Function(fileContents)();
+                } catch (e) {
+                    addErrorElement(
+                        self.output,
+                        "'" + file.name
+                            + "' is not a correct Javascript file." );
+                    return;
+                }
                 var element: HTMLElement = document.createElement("div");
                 element.className = "output output-uploading";
                 element.textContent = "Generating '" + file.name + "'...";
+                insertBeforeChildElements(self.output, element);
                 self.workerPaletteFinish(
                     settings.paletteDefault, file.name, element, "" );
-                insertBeforeChildElements(self.output, element);
+                // Leave default values to make sure we can draw the sprites.
+                settings.spriteWidth = settings.spriteHeight = "";
+                settings.scale = 1;
                 try {
                     self.PixelRender = new PixelRendr.PixelRendr(settings);
                     self.traverseSpriteLibrary(
                         self.PixelRender.getBaseLibrary() );
                 } catch (e) {
-                    cannotCreatePixelRenderError(self.output);
+                    addErrorElement(
+                        self.output,
+                        "A string sprite in '" + file.name
+                            + "' may be incorrect or the palette may have too few colors." );
                 }
             };
             reader.readAsText(file);
@@ -418,22 +436,28 @@ module ImageWritr {
             }
         }
 
+        /**
+         * 
+         */
         private processSprite(key: string, value: number): void {
             var e: any = createDomElements();
             this.spriteDrawers.push( new SpriteDrawr(
                 this.PixelRender, key, value, this.outputImageFormat,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
-            insertBeforeChildElements(this.output, e.container);
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
+            insertBeforeChildElements(this.output, e.container);
+            insertBeforeChildElements(
+                e.container, document.createElement("br") );
             insertBeforeChildElements(
                 e.container, document.createTextNode(
                     "Finished '" + key + "' ('" + this.palette
                     + "' palette)." ) );
-            insertBeforeChildElements(
-                e.container, document.createElement("br") );
         }
 
+        /**
+         * 
+         */
         private traverseSpriteLibrary(o: Object, prevKey: string = ""): void {
             var i: any;
             for (i in o) {
@@ -785,10 +809,10 @@ module ImageWritr {
         return parent;
     }
 
-    function cannotCreatePixelRenderError(output: HTMLElement): void {
+    function addErrorElement(output: HTMLElement, message: string): void {
         var error: HTMLElement = document.createElement("div");
         error.className = "output output-failed";
-        error.textContent = "String sprite may be incorrect or the palette have too few colors.";
+        error.textContent = message;
         insertBeforeChildElements(output, error);
     }
 }

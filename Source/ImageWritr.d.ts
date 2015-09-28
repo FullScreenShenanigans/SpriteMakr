@@ -5,6 +5,8 @@ declare module ImageWritr {
         workerCallback?: (...args: any[]) => void;
     }
 
+    type Palette = { [i: string]: number[][] };
+
     export interface IImageWritrSettings {
         outputImageFormat: string,
         allowedImages: { [i: string]: boolean; };
@@ -14,7 +16,7 @@ declare module ImageWritr {
         outputSelector: string;
         textInputSelector: string;
         paletteDefault: string;
-        palettes: { [i: string]: number[][] };
+        palettes: Palette;
     }
 
     export interface IImageWritr {

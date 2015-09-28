@@ -12,7 +12,7 @@ module ImageWritr {
         /**
          * 
          */
-        private palettes: { [i: string]: number[][]; };
+        private palettes: Palette;
 
         /**
          * 
@@ -114,7 +114,7 @@ module ImageWritr {
         /**
          * 
          */
-        private initializePalettes(palettes: {[i: string]: number[][]}): void {
+        private initializePalettes(palettes: Palette): void {
             this.paletteSection.appendChild(this.initializePaletteUploader());
 
             var name: string,
@@ -766,10 +766,7 @@ module ImageWritr {
         return true;
     }
 
-    function generatePaletteId(
-        basename: string,
-        palettes: {[i: string]: number[][]})
-    : string {
+    function generatePaletteId(basename: string, palettes: Palette): string {
         var name: string = basename.replace(/[^a-zA-Z0-9_\-]/g, "");
         for (var n: number = 2; palettes[name]; ++n) {
             if (n === 2) {
@@ -781,9 +778,7 @@ module ImageWritr {
         return name;
     }
 
-    function findPaletteKey(
-        palette: Uint8ClampedArray[],
-        palettes: {[i: string]: number[][]})
+    function findPaletteKey(palette: Uint8ClampedArray[], palettes: Palette)
     : string {
         var key: string;
         for (key in palettes) {

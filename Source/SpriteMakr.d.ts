@@ -1,13 +1,13 @@
 /// <reference path="References/PixelRendr-0.2.0.ts" />
 
-declare module ImageWritr {
+declare module SpriteMakr {
     export interface IWorkerHTMLElement extends HTMLElement {
         workerCallback?: (...args: any[]) => void;
     }
 
     type Palette = { [i: string]: number[][] };
 
-    export interface IImageWritrSettings {
+    export interface ISpriteMakrSettings {
         outputImageFormat: string,
         allowedImages: { [i: string]: boolean; };
         allowedJS: { [i: string]: boolean; };
@@ -19,7 +19,7 @@ declare module ImageWritr {
         palettes: Palette;
     }
 
-    export interface IImageWritr {
+    export interface ISpriteMakr {
 
     }
 }

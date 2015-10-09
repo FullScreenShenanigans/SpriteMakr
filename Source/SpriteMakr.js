@@ -1339,15 +1339,15 @@ var PixelRendr;
     })();
     PixelRendr_1.PixelRendr = PixelRendr;
 })(PixelRendr || (PixelRendr = {}));
-/// <reference path="ImageWritr.d.ts" />
-var ImageWritr;
-(function (ImageWritr_1) {
+/// <reference path="SpriteMakr.d.ts" />
+var SpriteMakr;
+(function (SpriteMakr_1) {
     "use strict";
-    var ImageWritr = (function () {
+    var SpriteMakr = (function () {
         /**
          *
          */
-        function ImageWritr(settings) {
+        function SpriteMakr(settings) {
             this.palettes = {};
             this.spriteDrawers = [];
             this.paletteIdPrefix = "palette_";
@@ -1367,7 +1367,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializeTextInput = function (textInputSelector) {
+        SpriteMakr.prototype.initializeTextInput = function (textInputSelector) {
             var textInput = document.querySelector(textInputSelector);
             textInput.onclick = function (e) {
                 e.stopPropagation();
@@ -1392,7 +1392,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializePalettes = function (palettes) {
+        SpriteMakr.prototype.initializePalettes = function (palettes) {
             this.paletteSection.appendChild(this.initializePaletteUploader());
             var name, element, chosen;
             for (name in palettes) {
@@ -1410,7 +1410,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializePalette = function (name, palette) {
+        SpriteMakr.prototype.initializePalette = function (name, palette) {
             var surround = document.createElement("div"), label = document.createElement("h4"), container = document.createElement("div"), color, boxOut, boxIn, i;
             surround.className = "palette";
             label.className = "palette-label";
@@ -1438,7 +1438,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializePaletteUploader = function () {
+        SpriteMakr.prototype.initializePaletteUploader = function () {
             var surround = document.createElement("div"), label = document.createElement("h4");
             surround.className = "palette palette-uploader";
             label.className = "palette-label";
@@ -1452,7 +1452,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.choosePalette = function (element, name, palette, event) {
+        SpriteMakr.prototype.choosePalette = function (element, name, palette, event) {
             var elements = element.parentElement.children, i;
             for (i = 0; i < elements.length; i += 1) {
                 elements[i].className = "palette";
@@ -1469,7 +1469,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializeInput = function (selector) {
+        SpriteMakr.prototype.initializeInput = function (selector) {
             var input = document.querySelector(selector);
             this.initializeClickInput(input);
             this.initializeDragInput(input);
@@ -1477,7 +1477,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializeClickInput = function (input) {
+        SpriteMakr.prototype.initializeClickInput = function (input) {
             var dummy = document.createElement("input");
             dummy.type = "file";
             dummy.multiple = true;
@@ -1490,7 +1490,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.initializeDragInput = function (input) {
+        SpriteMakr.prototype.initializeDragInput = function (input) {
             input.ondragenter = this.handleFileDragEnter.bind(this, input);
             input.ondragover = this.handleFileDragOver.bind(this, input);
             input.ondragleave = input.ondragend = this.handleFileDragLeave.bind(this, input);
@@ -1499,7 +1499,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.handleFileDragEnter = function (input, event) {
+        SpriteMakr.prototype.handleFileDragEnter = function (input, event) {
             if (event.dataTransfer) {
                 event.dataTransfer.dropEffect = "copy";
             }
@@ -1508,14 +1508,14 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.handleFileDragOver = function (input, event) {
+        SpriteMakr.prototype.handleFileDragOver = function (input, event) {
             event.preventDefault();
             return false;
         };
         /**
          *
          */
-        ImageWritr.prototype.handleFileDragLeave = function (input, event) {
+        SpriteMakr.prototype.handleFileDragLeave = function (input, event) {
             if (event.dataTransfer) {
                 event.dataTransfer.dropEffect = "none";
             }
@@ -1527,7 +1527,7 @@ var ImageWritr;
          * @remarks input.files is when the input[type=file] is the source, while
          *          event.dataTransfer.files is for drag-and-drop.
          */
-        ImageWritr.prototype.handleFileDrop = function (input, event) {
+        SpriteMakr.prototype.handleFileDrop = function (input, event) {
             var files = input.files || event.dataTransfer.files, elements = [], file, tag, element, i;
             this.handleFileDragLeave(input, event);
             event.preventDefault();
@@ -1557,7 +1557,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.processSpriteLibrary = function (file) {
+        SpriteMakr.prototype.processSpriteLibrary = function (file) {
             var self = this;
             var reader = new FileReader();
             reader.onloadend = function () {
@@ -1595,7 +1595,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.createWorkerElement = function (file, target) {
+        SpriteMakr.prototype.createWorkerElement = function (file, target) {
             var element = document.createElement("div"), reader = new FileReader();
             element.workerCallback = target.workerCallback;
             element.className = "output output-uploading";
@@ -1609,7 +1609,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerUpdateProgress = function (filename, element, event) {
+        SpriteMakr.prototype.workerUpdateProgress = function (filename, element, event) {
             if (!event.lengthComputable) {
                 return;
             }
@@ -1619,7 +1619,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerTryStartWorking = function (filename, element, event) {
+        SpriteMakr.prototype.workerTryStartWorking = function (filename, element, event) {
             var result = event.currentTarget.result;
             if (element.workerCallback) {
                 element.workerCallback(result, filename, element, event);
@@ -1631,7 +1631,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerTryStartWorkingDefault = function (result, filename, element, event) {
+        SpriteMakr.prototype.workerTryStartWorkingDefault = function (result, filename, element, event) {
             if (result.length > 100000) {
                 this.workerCannotStartWorking(result, filename, element, event);
             }
@@ -1642,9 +1642,9 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.processSprite = function (key, value) {
+        SpriteMakr.prototype.processSprite = function (key, value) {
             var e = createDomElements();
-            this.spriteDrawers.push(new SpriteDrawr(this.PixelRender, key, value, this.outputImageFormat, e.left, e.right, e.width, e.height, e.canvas, e.link));
+            this.spriteDrawers.push(new SpriteDrwr(this.PixelRender, key, value, this.outputImageFormat, e.left, e.right, e.width, e.height, e.canvas, e.link));
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
             insertBeforeChildElements(this.output, e.container);
@@ -1655,7 +1655,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.traverseSpriteLibrary = function (o, prevKey) {
+        SpriteMakr.prototype.traverseSpriteLibrary = function (o, prevKey) {
             if (prevKey === void 0) { prevKey = ""; }
             var i;
             for (i in o) {
@@ -1672,14 +1672,14 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerCannotStartWorking = function (result, filename, element, event) {
+        SpriteMakr.prototype.workerCannotStartWorking = function (result, filename, element, event) {
             element.textContent = "'" + filename + "' is too big! Use a smaller file.";
             element.className = "output output-failed";
         };
         /**
          *
          */
-        ImageWritr.prototype.workerStartWorking = function (resultBase64, filename, element, event) {
+        SpriteMakr.prototype.workerStartWorking = function (resultBase64, filename, element, event) {
             element.className = "output output-working";
             element.textContent = "Working on " + filename + "...";
             element.appendChild(document.createElement("br"));
@@ -1689,7 +1689,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.parseBase64Image = function (src, callback) {
+        SpriteMakr.prototype.parseBase64Image = function (src, callback) {
             var image = document.createElement("img");
             image.onload = this.PixelRender.encode.bind(this.PixelRender, image, callback);
             image.src = src;
@@ -1697,7 +1697,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerFinishRender = function (filename, element, result, image) {
+        SpriteMakr.prototype.workerFinishRender = function (filename, element, result, image) {
             element.firstChild.textContent = "Finished '" + filename + "' ('" + element.getAttribute("palette") + "' palette).";
             element.className = "output output-complete";
             element.style.backgroundImage = "url('" + image.src + "')";
@@ -1706,7 +1706,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerPaletteUploaderStart = function (result, filename, element, event) {
+        SpriteMakr.prototype.workerPaletteUploaderStart = function (result, filename, element, event) {
             var image = document.createElement("img");
             image.onload = this.workerPaletteCollect.bind(this, image, filename, element, result);
             image.src = result;
@@ -1716,7 +1716,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerPaletteCollect = function (image, filename, element, src, event) {
+        SpriteMakr.prototype.workerPaletteCollect = function (image, filename, element, src, event) {
             var canvas = document.createElement("canvas"), context = canvas.getContext("2d"), data;
             canvas.width = image.width;
             canvas.height = image.height;
@@ -1727,7 +1727,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.selectExistingPalette = function (palette) {
+        SpriteMakr.prototype.selectExistingPalette = function (palette) {
             var key = findPaletteKey(palette, this.palettes);
             if (key) {
                 this.choosePalette(document.querySelector("#" + this.paletteIdPrefix + key), key, this.palettes[key]);
@@ -1740,7 +1740,7 @@ var ImageWritr;
         /**
          *
          */
-        ImageWritr.prototype.workerPaletteFinish = function (colors, filename, element, src) {
+        SpriteMakr.prototype.workerPaletteFinish = function (colors, filename, element, src) {
             if (this.selectExistingPalette(colors)) {
                 element.className = "output output-info";
                 element.setAttribute("palette", this.palette);
@@ -1763,9 +1763,9 @@ var ImageWritr;
             chooser.click();
             element.setAttribute("palette", this.palette);
         };
-        return ImageWritr;
+        return SpriteMakr;
     })();
-    ImageWritr_1.ImageWritr = ImageWritr;
+    SpriteMakr_1.SpriteMakr = SpriteMakr;
     function setupTextInput(value) {
         var textInput = document.createElement("input");
         textInput.spellcheck = false;
@@ -1807,8 +1807,8 @@ var ImageWritr;
         }
         return input;
     }
-    var SpriteDrawr = (function () {
-        function SpriteDrawr(pixelRender, spriteKey, nPixels, outputFormat, leftButton, rightButton, widthText, heightText, canvas, link) {
+    var SpriteDrwr = (function () {
+        function SpriteDrwr(pixelRender, spriteKey, nPixels, outputFormat, leftButton, rightButton, widthText, heightText, canvas, link) {
             this.pixelRender = pixelRender;
             this.spriteKey = spriteKey;
             this.outputFormat = outputFormat;
@@ -1829,7 +1829,7 @@ var ImageWritr;
             };
             this.updateDim();
         }
-        SpriteDrawr.prototype.updateDim = function (op) {
+        SpriteDrwr.prototype.updateDim = function (op) {
             var maxInd = this.dims.length - 1;
             if (op === "+") {
                 if (this.dimIndex >= maxInd) {
@@ -1855,7 +1855,7 @@ var ImageWritr;
             this.leftButton.disabled = (this.dimIndex === 0);
             this.render();
         };
-        SpriteDrawr.prototype.render = function () {
+        SpriteDrwr.prototype.render = function () {
             var sizing = {
                 spriteWidth: this.canvas.width,
                 spriteHeight: this.canvas.height
@@ -1869,7 +1869,7 @@ var ImageWritr;
                 this.spriteKey.replace(/ /g, "_") + "." + this.outputFormat;
             this.link.href = this.canvas.toDataURL("image/" + this.outputFormat);
         };
-        return SpriteDrawr;
+        return SpriteDrwr;
     })();
     function calculatePossibleDimensions(nPixels) {
         if (nPixels === 0) {
@@ -1944,4 +1944,4 @@ var ImageWritr;
         error.textContent = message;
         insertBeforeChildElements(output, error);
     }
-})(ImageWritr || (ImageWritr = {}));
+})(SpriteMakr || (SpriteMakr = {}));

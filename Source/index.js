@@ -1,11 +1,11 @@
-/// <reference path="ImageWritr.js" />
+/// <reference path="SpriteMakr.js" />
 
 document.onreadystatechange = function (event) {
     if (event.target.readyState != "complete") {
         return;
     }
 
-    window.ImageWriter = new ImageWritr.ImageWritr({
+    window.spriteMaker = new SpriteMakr.SpriteMakr({
         "outputImageFormat": "gif",
         "allowedJS": {
             "javascript": true,

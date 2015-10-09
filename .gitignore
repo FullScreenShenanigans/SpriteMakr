@@ -2,7 +2,7 @@ Distribution
 Distribution/**
 Source/*.js
 !Source/index.js
-!Source/ImageWritr.js
+!Source/SpriteMakr.js
 Source/*.md
 Source/*.txt
 node_modules/

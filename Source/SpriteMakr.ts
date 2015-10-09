@@ -1,9 +1,9 @@
-/// <reference path="ImageWritr.d.ts" />
+/// <reference path="SpriteMakr.d.ts" />
 
-module ImageWritr {
+module SpriteMakr {
     "use strict";
 
-    export class ImageWritr implements IImageWritr {
+    export class SpriteMakr implements ISpriteMakr {
         /**
          * 
          */
@@ -57,7 +57,7 @@ module ImageWritr {
         /**
          * 
          */
-        constructor(settings: IImageWritrSettings) {
+        constructor(settings: ISpriteMakrSettings) {
             this.palettes = {};
             this.spriteDrawers = [];
             this.paletteIdPrefix = "palette_";

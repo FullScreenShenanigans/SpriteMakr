@@ -1,5 +1,5 @@
 {
-    "name": "ImageWritr",
+    "name": "SpriteMakr",
     "description": "A utility for converting PixelRendr sprites into regular images.",
     "version": "0.2.0",
     "author": {
@@ -8,10 +8,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "ssh://git@github.com:FullScreenShenanigans/ImageWritr.git"
+        "url": "ssh://git@github.com:FullScreenShenanigans/SpriteMakr.git"
     },
     "bugs": {
-        "url": "https://github.com/FullScreenShenanigans/ImageWritr/issues"
+        "url": "https://github.com/FullScreenShenanigans/SpriteMakr/issues"
     },
     "license": "MIT",
     "devDependencies": {

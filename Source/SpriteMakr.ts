@@ -740,7 +740,8 @@ module SpriteMakr {
 
         var dims: number[][] = [ [1, nPixels] ];
         var upTo: number = Math.sqrt(nPixels);
-        for ( var n: number = 2; n <= upTo; ++n ) {
+        var n: number;
+        for ( n = 2; n <= upTo; ++n ) {
             if ( nPixels % n === 0 ) {
                 dims.push( [n, nPixels / n] );
             }
@@ -750,7 +751,8 @@ module SpriteMakr {
         if ( dims[iReverseUpTo][0] === dims[iReverseUpTo][1] ) {
             --iReverseUpTo;
         }
-        for ( var i: number = iReverseUpTo ; i >= 0 ; --i ) {
+        var i: number;
+        for ( i = iReverseUpTo ; i >= 0 ; --i ) {
             dims.push( [ dims[i][1], dims[i][0] ] );
         }
 
@@ -768,7 +770,8 @@ module SpriteMakr {
 
     function generatePaletteId(basename: string, palettes: Palette): string {
         var name: string = basename.replace(/[^a-zA-Z0-9_\-]/g, "");
-        for (var n: number = 2; palettes[name]; ++n) {
+        var n: number;
+        for (n = 2; palettes[name]; ++n) {
             if (n === 2) {
                 name += "_2";
             } else {
@@ -786,7 +789,8 @@ module SpriteMakr {
                 && palettes[key].length === palette.length
             ) {
                 var equal: boolean = true;
-                for (var i: number = 0; i < palette.length; ++i) {
+                var i: number;
+                for (i = 0; i < palette.length; ++i) {
                     if ( !arraysEqual(palettes[key][i], palette[i]) ) {
                         equal = false;
                         break;

@@ -1368,11 +1368,10 @@ var SpriteMakr;
          *
          */
         SpriteMakr.prototype.initializeTextInput = function (textInputSelector) {
-            var textInput = document.querySelector(textInputSelector);
+            var textInput = document.querySelector(textInputSelector), self = this;
             textInput.onclick = function (e) {
                 e.stopPropagation();
             };
-            var self = this;
             textInput.onkeypress = function (key) {
                 if (key.which !== 13) {
                     return;
@@ -1558,13 +1557,11 @@ var SpriteMakr;
          *
          */
         SpriteMakr.prototype.processSpriteLibrary = function (file) {
-            var self = this;
-            var reader = new FileReader();
+            var self = this, reader = new FileReader();
             reader.onloadend = function () {
                 var fileContents = this.result
                     .replace(/^[^=]*=/, "return")
-                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'");
-                var settings;
+                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'"), settings, element;
                 try {
                     settings = new Function(fileContents)();
                 }
@@ -1573,7 +1570,7 @@ var SpriteMakr;
                         + "' is not a correct Javascript file.");
                     return;
                 }
-                var element = document.createElement("div");
+                element = document.createElement("div");
                 element.className = "output output-uploading";
                 element.textContent = "Generating '" + file.name + "'...";
                 insertBeforeChildElements(self.output, element);
@@ -1859,10 +1856,7 @@ var SpriteMakr;
             var sizing = {
                 spriteWidth: this.canvas.width,
                 spriteHeight: this.canvas.height
-            };
-            var sprite = this.pixelRender.decode(this.spriteKey, sizing);
-            var context = this.canvas.getContext("2d");
-            var imageData = context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            }, sprite = this.pixelRender.decode(this.spriteKey, sizing), context = this.canvas.getContext("2d"), imageData = context.getImageData(0, 0, this.canvas.width, this.canvas.height);
             this.pixelRender.memcpyU8(sprite, imageData.data);
             context.putImageData(imageData, 0, 0);
             this.link.download =
@@ -1875,18 +1869,17 @@ var SpriteMakr;
         if (nPixels === 0) {
             return null;
         }
-        var dims = [[1, nPixels]];
-        var upTo = Math.sqrt(nPixels);
-        for (var n = 2; n <= upTo; ++n) {
+        var dims = [[1, nPixels]], upTo = Math.sqrt(nPixels), n, i, iReverseUpTo;
+        for (n = 2; n <= upTo; ++n) {
             if (nPixels % n === 0) {
                 dims.push([n, nPixels / n]);
             }
         }
-        var iReverseUpTo = dims.length - 1;
+        iReverseUpTo = dims.length - 1;
         if (dims[iReverseUpTo][0] === dims[iReverseUpTo][1]) {
             --iReverseUpTo;
         }
-        for (var i = iReverseUpTo; i >= 0; --i) {
+        for (i = iReverseUpTo; i >= 0; --i) {
             dims.push([dims[i][1], dims[i][0]]);
         }
         return dims;
@@ -1904,8 +1897,8 @@ var SpriteMakr;
         return true;
     }
     function generatePaletteId(basename, palettes) {
-        var name = basename.replace(/[^a-zA-Z0-9_\-]/g, "");
-        for (var n = 2; palettes[name]; ++n) {
+        var name = basename.replace(/[^a-zA-Z0-9_\-]/g, ""), n;
+        for (n = 2; palettes[name]; ++n) {
             if (n === 2) {
                 name += "_2";
             }
@@ -1916,12 +1909,12 @@ var SpriteMakr;
         return name;
     }
     function findPaletteKey(palette, palettes) {
-        var key;
+        var key, equal, i;
         for (key in palettes) {
             if (palettes[key].constructor === Array
                 && palettes[key].length === palette.length) {
-                var equal = true;
-                for (var i = 0; i < palette.length; ++i) {
+                equal = true;
+                for (i = 0; i < palette.length; ++i) {
                     if (!arraysEqual(palettes[key][i], palette[i])) {
                         equal = false;
                         break;

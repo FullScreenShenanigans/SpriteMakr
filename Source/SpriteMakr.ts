@@ -86,11 +86,12 @@ module SpriteMakr {
          */
         private initializeTextInput(textInputSelector: string): void {
             var textInput: HTMLElement =
-                <HTMLElement>document.querySelector(textInputSelector);
+                    <HTMLElement>document.querySelector(textInputSelector),
+                self: any = this;
+
             textInput.onclick = function(e: Event): void {
                 e.stopPropagation();
             };
-            var self: any = this;
             textInput.onkeypress = function(key: KeyboardEvent): void {
                 if (key.which !== 13) { return; }
 
@@ -341,13 +342,15 @@ module SpriteMakr {
          * 
          */
         private processSpriteLibrary(file: File): void {
-            var self: any = this;
-            var reader: FileReader = new FileReader();
+            var self: any = this,
+                reader: FileReader = new FileReader();
+
             reader.onloadend = function(): void {
                 var fileContents: string = this.result
-                    .replace(/^[^=]*=/, "return")
-                    .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'");
-                var settings: PixelRendr.IPixelRendrSettings;
+                        .replace(/^[^=]*=/, "return")
+                        .replace(/[^ ]*FullScreen[^ ,;]*/g, "'_'"),
+                    settings: PixelRendr.IPixelRendrSettings,
+                    element: HTMLElement;
                 try {
                     settings = new Function(fileContents)();
                 } catch (e) {
@@ -357,7 +360,7 @@ module SpriteMakr {
                             + "' is not a correct Javascript file." );
                     return;
                 }
-                var element: HTMLElement = document.createElement("div");
+                element = document.createElement("div");
                 element.className = "output output-uploading";
                 element.textContent = "Generating '" + file.name + "'...";
                 insertBeforeChildElements(self.output, element);
@@ -678,6 +681,7 @@ module SpriteMakr {
             this.link = link;
             this.leftButton  = leftButton;
             this.rightButton = rightButton;
+
             var self: any = this;
             this.leftButton.onclick  = function(): void {
                 self.updateDim("-");
@@ -717,14 +721,14 @@ module SpriteMakr {
 
         private render(): void {
             var sizing: any = {
-                spriteWidth: this.canvas.width,
-                spriteHeight: this.canvas.height
-            };
-            var sprite: any = this.pixelRender.decode(this.spriteKey, sizing);
-            var context: any = this.canvas.getContext("2d");
+                    spriteWidth: this.canvas.width,
+                    spriteHeight: this.canvas.height
+                },
+                sprite: any = this.pixelRender.decode(this.spriteKey, sizing),
+                context: any = this.canvas.getContext("2d"),
+                imageData: any = context.getImageData(
+                    0, 0, this.canvas.width, this.canvas.height);
 
-            var imageData: any = context.getImageData(
-                0, 0, this.canvas.width, this.canvas.height);
             this.pixelRender.memcpyU8(sprite, imageData.data);
             context.putImageData(imageData, 0, 0);
 
@@ -738,20 +742,22 @@ module SpriteMakr {
     function calculatePossibleDimensions(nPixels: number): number[][] {
         if ( nPixels === 0 ) { return null; }
 
-        var dims: number[][] = [ [1, nPixels] ];
-        var upTo: number = Math.sqrt(nPixels);
-        var n: number;
+        var dims: number[][] = [ [1, nPixels] ],
+            upTo: number = Math.sqrt(nPixels),
+            n: number,
+            i: number,
+            iReverseUpTo: number;
+
         for ( n = 2; n <= upTo; ++n ) {
             if ( nPixels % n === 0 ) {
                 dims.push( [n, nPixels / n] );
             }
         }
 
-        var iReverseUpTo: number = dims.length - 1;
+        iReverseUpTo = dims.length - 1;
         if ( dims[iReverseUpTo][0] === dims[iReverseUpTo][1] ) {
             --iReverseUpTo;
         }
-        var i: number;
         for ( i = iReverseUpTo ; i >= 0 ; --i ) {
             dims.push( [ dims[i][1], dims[i][0] ] );
         }
@@ -769,8 +775,8 @@ module SpriteMakr {
     }
 
     function generatePaletteId(basename: string, palettes: Palette): string {
-        var name: string = basename.replace(/[^a-zA-Z0-9_\-]/g, "");
-        var n: number;
+        var name: string = basename.replace(/[^a-zA-Z0-9_\-]/g, ""),
+            n: number;
         for (n = 2; palettes[name]; ++n) {
             if (n === 2) {
                 name += "_2";
@@ -783,13 +789,14 @@ module SpriteMakr {
 
     function findPaletteKey(palette: Uint8ClampedArray[], palettes: Palette)
     : string {
-        var key: string;
+        var key: string,
+            equal: boolean,
+            i: number;
         for (key in palettes) {
             if ( palettes[key].constructor === Array
                 && palettes[key].length === palette.length
             ) {
-                var equal: boolean = true;
-                var i: number;
+                equal = true;
                 for (i = 0; i < palette.length; ++i) {
                     if ( !arraysEqual(palettes[key][i], palette[i]) ) {
                         equal = false;

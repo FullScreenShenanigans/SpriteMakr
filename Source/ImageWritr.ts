@@ -52,7 +52,7 @@ module ImageWritr {
         /**
          * 
          */
-        private spriteDrawers: SpriteDrawr[];
+        private spriteDrawers: SpriteDrwr[];
 
         /**
          * 
@@ -441,7 +441,7 @@ module ImageWritr {
          */
         private processSprite(key: string, value: number): void {
             var e: any = createDomElements();
-            this.spriteDrawers.push( new SpriteDrawr(
+            this.spriteDrawers.push( new SpriteDrwr(
                 this.PixelRender, key, value, this.outputImageFormat,
                 e.left, e.right, e.width, e.height, e.canvas, e.link) );
             e.container.setAttribute("palette", this.palette);
@@ -642,7 +642,7 @@ module ImageWritr {
         return input;
     }
 
-    class SpriteDrawr {
+    class SpriteDrwr {
         private pixelRender: PixelRendr.IPixelRendr;
         private spriteKey: string;
         private dims: number[][];

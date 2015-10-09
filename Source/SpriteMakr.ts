@@ -444,9 +444,9 @@ module SpriteMakr {
          */
         private processSprite(key: string, value: number): void {
             var e: any = createDomElements();
-            this.spriteDrawers.push( new SpriteDrwr(
+            this.spriteDrawers.push(new SpriteDrwr(
                 this.PixelRender, key, value, this.outputImageFormat,
-                e.left, e.right, e.width, e.height, e.canvas, e.link) );
+                e.left, e.right, e.width, e.height, e.canvas, e.link));
             e.container.setAttribute("palette", this.palette);
             e.container.className = "output output-complete";
             insertBeforeChildElements(this.output, e.container);
@@ -465,9 +465,9 @@ module SpriteMakr {
             var i: any;
             for (i in o) {
                 if (o[i] !== null && typeof(o[i]) === "object") {
-                    if ( o[i].constructor !== Uint8ClampedArray ) {
-                        this.traverseSpriteLibrary( o[i], prevKey + i + " " );
-                    } else if ( o[i].length > 0 ) {
+                    if (o[i].constructor !== Uint8ClampedArray) {
+                        this.traverseSpriteLibrary(o[i], prevKey + i + " ");
+                    } else if (o[i].length > 0) {
                         this.processSprite(
                             (i !== "normal" ? prevKey + i : prevKey),
                             o[i].length / 4 );
@@ -491,7 +491,7 @@ module SpriteMakr {
             element.className = "output output-working";
             element.textContent = "Working on " + filename + "...";
             element.appendChild(document.createElement("br"));
-            element.appendChild( setupTextInput(resultBase64) );
+            element.appendChild(setupTextInput(resultBase64));
 
             this.parseBase64Image(resultBase64, this.workerFinishRender.bind(this, filename, element));
         }
@@ -512,7 +512,7 @@ module SpriteMakr {
             element.firstChild.textContent = "Finished '" + filename + "' ('" + element.getAttribute("palette") + "' palette).";
             element.className = "output output-complete";
             element.style.backgroundImage = "url('" + image.src + "')";
-            element.appendChild( setupTextInput(result) );
+            element.appendChild(setupTextInput(result));
         }
 
         /**
@@ -612,33 +612,33 @@ module SpriteMakr {
 
     function createDomElements(): any {
         var e: any = {
-            container : document.createElement( "div" ),
-            left   : createInputHelper( "button", "←" ),
-            right  : createInputHelper( "button", "→" ),
-            width  : createInputHelper( "text" ),
-            height : createInputHelper( "text" ),
-            link   : document.createElement( "a" ),
-            canvas : document.createElement( "canvas" )
+            container : document.createElement("div"),
+            left   : createInputHelper("button", "←"),
+            right  : createInputHelper("button", "→"),
+            width  : createInputHelper("text"),
+            height : createInputHelper("text"),
+            link   : document.createElement("a"),
+            canvas : document.createElement("canvas")
         };
         e.width.className = e.height.className = "size-display";
-        e.container.appendChild( e.left );
-        e.container.appendChild( e.right );
-        e.container.appendChild( document.createElement("br") );
-        e.container.appendChild( e.width );
-        e.container.appendChild( e.height );
-        e.container.appendChild( document.createElement("br") );
-        e.container.appendChild( e.link );
-        e.link.appendChild( e.canvas );
+        e.container.appendChild(e.left);
+        e.container.appendChild(e.right);
+        e.container.appendChild(document.createElement("br"));
+        e.container.appendChild(e.width);
+        e.container.appendChild(e.height);
+        e.container.appendChild(document.createElement("br"));
+        e.container.appendChild(e.link);
+        e.link.appendChild(e.canvas);
         return e;
     }
 
     function createInputHelper(type: string, value?: string)
     : HTMLInputElement {
         var input: HTMLInputElement = document.createElement("input");
-        if ( type === "text" ) {
+        if (type === "text") {
             input.type = "text";
             input.readOnly = true;
-        } else if ( type === "button" ) {
+        } else if (type === "button") {
             input.type = "button";
             input.value = value;
         }
@@ -674,7 +674,7 @@ module SpriteMakr {
             this.spriteKey = spriteKey;
             this.outputFormat = outputFormat;
             this.dims = calculatePossibleDimensions(nPixels);
-            this.dimIndex = Math.floor( (this.dims.length - 1) / 2 );
+            this.dimIndex = Math.floor((this.dims.length - 1) / 2);
             this.canvas = canvas;
             this.widthText  = widthText;
             this.heightText = heightText;
@@ -694,14 +694,14 @@ module SpriteMakr {
 
         private updateDim(op?: string): void {
             var maxInd: number = this.dims.length - 1;
-            if ( op === "+" ) {
-                if ( this.dimIndex >= maxInd ) {
+            if (op === "+") {
+                if (this.dimIndex >= maxInd) {
                     this.dimIndex = maxInd;
                 } else {
                     ++this.dimIndex;
                 }
-            } else if ( op === "-" ) {
-                if ( this.dimIndex <= 0 ) {
+            } else if (op === "-") {
+                if (this.dimIndex <= 0) {
                     this.dimIndex = 0;
                 } else {
                     --this.dimIndex;
@@ -710,8 +710,8 @@ module SpriteMakr {
 
             this.canvas.width  = this.dims[this.dimIndex][0];
             this.canvas.height = this.dims[this.dimIndex][1];
-            this.widthText.value  = String( this.canvas.width );
-            this.heightText.value = String( this.canvas.height );
+            this.widthText.value  = String(this.canvas.width);
+            this.heightText.value = String(this.canvas.height);
 
             this.rightButton.disabled = (this.dimIndex === maxInd);
             this.leftButton .disabled = (this.dimIndex === 0);
@@ -740,7 +740,7 @@ module SpriteMakr {
     }
 
     function calculatePossibleDimensions(nPixels: number): number[][] {
-        if ( nPixels === 0 ) { return null; }
+        if (nPixels === 0) { return null; }
 
         var dims: number[][] = [ [1, nPixels] ],
             upTo: number = Math.sqrt(nPixels),
@@ -748,18 +748,18 @@ module SpriteMakr {
             i: number,
             iReverseUpTo: number;
 
-        for ( n = 2; n <= upTo; ++n ) {
-            if ( nPixels % n === 0 ) {
-                dims.push( [n, nPixels / n] );
+        for (n = 2; n <= upTo; ++n) {
+            if (nPixels % n === 0) {
+                dims.push([n, nPixels / n]);
             }
         }
 
         iReverseUpTo = dims.length - 1;
-        if ( dims[iReverseUpTo][0] === dims[iReverseUpTo][1] ) {
+        if (dims[iReverseUpTo][0] === dims[iReverseUpTo][1]) {
             --iReverseUpTo;
         }
-        for ( i = iReverseUpTo ; i >= 0 ; --i ) {
-            dims.push( [ dims[i][1], dims[i][0] ] );
+        for (i = iReverseUpTo ; i >= 0 ; --i) {
+            dims.push([ dims[i][1], dims[i][0] ]);
         }
 
         return dims;
@@ -781,7 +781,7 @@ module SpriteMakr {
             if (n === 2) {
                 name += "_2";
             } else {
-                name = name.substring( 0, name.lastIndexOf("_") + 1 ) + n;
+                name = name.substring(0, name.lastIndexOf("_") + 1) + n;
             }
         }
         return name;
@@ -793,12 +793,12 @@ module SpriteMakr {
             equal: boolean,
             i: number;
         for (key in palettes) {
-            if ( palettes[key].constructor === Array
+            if (palettes[key].constructor === Array
                 && palettes[key].length === palette.length
             ) {
                 equal = true;
                 for (i = 0; i < palette.length; ++i) {
-                    if ( !arraysEqual(palettes[key][i], palette[i]) ) {
+                    if (!arraysEqual(palettes[key][i], palette[i])) {
                         equal = false;
                         break;
                     }

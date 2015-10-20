@@ -1,0 +1,9 @@
+Distribution
+Distribution/**
+Source/*.js
+!Source/index.js
+!Source/SpriteMakr.js
+Source/*.md
+Source/*.txt
+node_modules/
+npm-debug.log
